@@ -22,7 +22,7 @@ public class Student extends User implements Comparable<Student>, Researcher {
     private Map<Course, Mark> marks;
     private Transcript transcript;
 
-    // Researcher өрістері
+    // Researcher fields
     private boolean isResearcher;
     private List<ResearchPaper> papers;
     private List<ResearchProject> projects;
@@ -56,19 +56,19 @@ public class Student extends User implements Comparable<Student>, Researcher {
         this.failCount = 0;
     }
 
-    // ==================== STUDENT МЕТОДТАРЫ ====================
+    // ==================== STUDENT METHODS ====================
 
     public void enrollCourse(Course course) {
         if (courses.contains(course)) {
-            System.out.println("Бұл курсқа тіркелгенсіз.");
+            System.out.println("You are already enrolled in this course.");
             return;
         }
-        // credits тексерісі
+        // Check credits limit
         int totalCredits = courses.stream()
                 .mapToInt(Course::getCredits)
                 .sum();
         if (totalCredits + course.getCredits() > 21) {
-            System.out.println("21 кредит шегінен асады!");
+            System.out.println("Exceeds 21 credit limit!");
             return;
         }
         courses.add(course);
@@ -76,7 +76,7 @@ public class Student extends User implements Comparable<Student>, Researcher {
         System.out.println(getFullName() + " enrolled in " + course.getName());
     }
 
-    void addMark(Course course, Mark mark) {
+    public void addMark(Course course, Mark mark) {
         if (mark.getTotal() < 50) {
             failCount++;
             if (failCount > 3) {
@@ -85,8 +85,8 @@ public class Student extends User implements Comparable<Student>, Researcher {
             }
         }
         marks.put(course, mark);
-        transcript.addMark(course, mark); // ← өзгерді
-        gpa = transcript.calculateGPA();  // ← автоматты жаңарады
+        transcript.addMark(course, mark);
+        gpa = transcript.calculateGPA();
     }
 
     public Map<Course, Mark> viewMarks() {
@@ -125,7 +125,7 @@ public class Student extends User implements Comparable<Student>, Researcher {
         System.out.println(getFullName() + " assigned supervisor: " + supervisor);
     }
 
-    // ==================== RESEARCHER МЕТОДТАРЫ ====================
+    // ==================== RESEARCHER METHODS ====================
 
     @Override
     public List<ResearchProject> getProjects() {
@@ -138,7 +138,10 @@ public class Student extends User implements Comparable<Student>, Researcher {
     }
 
     @Override
-    public double getHIndex() { return hIndex; }
+    public double getHIndex() { 
+        return hIndex; 
+    }
+    
     public void setHIndex(double hIndex) {
         if (!isResearcher) {
             System.out.println(getFullName() + " is not a researcher!");
@@ -188,7 +191,13 @@ public class Student extends User implements Comparable<Student>, Researcher {
             System.out.println(getFullName() + " is not a researcher!");
             return;
         }
-        if (!papers.contains(paper)) papers.add(paper);
+        if (paper == null) {
+            System.out.println("Cannot add null paper.");
+            return;
+        }
+        if (!papers.contains(paper)) {
+            papers.add(paper);
+        }
     }
 
     @Override
@@ -197,8 +206,18 @@ public class Student extends User implements Comparable<Student>, Researcher {
             System.out.println(getFullName() + " is not a researcher!");
             return;
         }
-        if (!papers.contains(paper)) papers.add(paper);
-        news.announcePaper(paper);
+        if (paper == null) {
+            System.out.println("Cannot publish null paper.");
+            return;
+        }
+        if (!papers.contains(paper)) {
+            papers.add(paper);
+        }
+        if (news != null) {
+            news.announcePaper(paper);
+        } else {
+            System.out.println("Paper \"" + paper.getTitle() + "\" published, but no news announcement was created.");
+        }
     }
 
     @Override
@@ -223,27 +242,50 @@ public class Student extends User implements Comparable<Student>, Researcher {
 
     @Override
     public int compareTo(Student other) {
-        return Double.compare(other.gpa, this.gpa); // GPA бойынша кемуі
+        return Double.compare(other.gpa, this.gpa); // Descending by GPA
     }
 
     // ==================== GETTERS / SETTERS ====================
 
-    public double getGpa() { return gpa; }
-    public void setGpa(double gpa) { this.gpa = gpa; }
+    public double getGpa() { 
+        return gpa; 
+    }
+    
+    public void setGpa(double gpa) { 
+        this.gpa = gpa; 
+    }
 
-    public Faculty getFaculty() { return faculty; }
-    public void setFaculty(Faculty faculty) { this.faculty = faculty; }
+    public Faculty getFaculty() { 
+        return faculty; 
+    }
+    
+    public void setFaculty(Faculty faculty) { 
+        this.faculty = faculty; 
+    }
 
-    public int getYear() { return year; }
-    public void setYear(int year) { this.year = year; }
+    public int getYear() { 
+        return year; 
+    }
+    
+    public void setYear(int year) { 
+        this.year = year; 
+    }
 
-    public StudentDegree getDegree() { return degree; }
+    public StudentDegree getDegree() { 
+        return degree; 
+    }
 
-    public boolean isResearcher() { return isResearcher; }
+    public boolean isResearcher() { 
+        return isResearcher; 
+    }
 
-    public Researcher getSupervisor() { return supervisor; }
+    public Researcher getSupervisor() { 
+        return supervisor; 
+    }
 
-    public int getFailCount() { return failCount; }
+    public int getFailCount() { 
+        return failCount; 
+    }
 
     @Override
     public String toString() {
