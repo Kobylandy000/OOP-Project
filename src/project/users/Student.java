@@ -139,7 +139,18 @@ public class Student extends User implements Comparable<Student>, Researcher {
 
     @Override
     public double getHIndex() { return hIndex; }
-    public void setHIndex(double hIndex) { this.hIndex = hIndex; }
+    public void setHIndex(double hIndex) {
+        if (!isResearcher) {
+            System.out.println(getFullName() + " is not a researcher!");
+            return;
+        }
+        this.hIndex = hIndex;
+    }
+
+    public void activateResearchProfile(double hIndex) {
+        this.isResearcher = true;
+        this.hIndex = hIndex;
+    }
 
     @Override
     public void joinProject(ResearchProject project) throws NonResearchException {
@@ -229,9 +240,6 @@ public class Student extends User implements Comparable<Student>, Researcher {
     public StudentDegree getDegree() { return degree; }
 
     public boolean isResearcher() { return isResearcher; }
-    public void setResearcher(boolean researcher) {
-        this.isResearcher = researcher;
-    }
 
     public Researcher getSupervisor() { return supervisor; }
 

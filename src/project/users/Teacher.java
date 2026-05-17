@@ -18,7 +18,6 @@ public class Teacher extends Employee implements Researcher {
     private Map<Student, Integer> ratings;
 
     // Researcher өрістері
-    private boolean isResearcher;
     private List<ResearchPaper> papers;
     private List<ResearchProject> projects;
     private double hIndex;
@@ -36,7 +35,6 @@ public class Teacher extends Employee implements Researcher {
         this.status = status;
         this.yearsOfExperience = yearsOfExperience;
         // PROFESSOR әрдайым researcher болады
-        this.isResearcher = (status == TeacherStatus.PROFESSOR);
         init();
     }
 
@@ -113,7 +111,6 @@ public class Teacher extends Employee implements Researcher {
     public void setStatus(TeacherStatus status) {
         this.status = status;
         // Professor болса автоматты researcher
-        if (status == TeacherStatus.PROFESSOR) this.isResearcher = true;
     }
 
     public int getYearsOfExperience() { return yearsOfExperience; }
@@ -125,10 +122,7 @@ public class Teacher extends Employee implements Researcher {
         return status == TeacherStatus.PROFESSOR;
     }
 
-    public boolean isResearcher() { return isResearcher; }
-    public void setResearcher(boolean researcher) {
-        this.isResearcher = researcher;
-    }
+    public boolean isResearcher() { return status == TeacherStatus.PROFESSOR; }
 
     @Override
     public double getHIndex() { return hIndex; }
@@ -136,7 +130,7 @@ public class Teacher extends Employee implements Researcher {
 
     @Override
     public List<ResearchPaper> getPapers() {
-        if (!isResearcher) {
+        if (!isResearcher()) {
             System.out.println(getFullName() + " is not a researcher.");
             return new ArrayList<>();
         }
@@ -145,7 +139,7 @@ public class Teacher extends Employee implements Researcher {
 
     @Override
     public List<ResearchProject> getProjects() {
-        if (!isResearcher) {
+        if (!isResearcher()) {
             System.out.println(getFullName() + " is not a researcher.");
             return new ArrayList<>();
         }
@@ -153,7 +147,7 @@ public class Teacher extends Employee implements Researcher {
     }
 
     public void addPaper(ResearchPaper paper) {
-        if (!isResearcher) {
+        if (!isResearcher()) {
             System.out.println(getFullName() + " is not a researcher.");
             return;
         }
@@ -162,7 +156,7 @@ public class Teacher extends Employee implements Researcher {
 
     @Override
     public void joinProject(ResearchProject project) throws NonResearchException {
-        if (!isResearcher) {
+        if (!isResearcher()) {
             throw new NonResearchException(
                     getFullName() + " is not a researcher and cannot join a project!"
             );
@@ -178,7 +172,7 @@ public class Teacher extends Employee implements Researcher {
 
     @Override
     public void printPapers(Comparator<ResearchPaper> comparator) {
-        if (!isResearcher || papers.isEmpty()) {
+        if (!isResearcher() || papers.isEmpty()) {
             System.out.println("No papers found.");
             return;
         }
@@ -193,7 +187,7 @@ public class Teacher extends Employee implements Researcher {
 
     @Override
     public void publishPaper(ResearchPaper paper, News news) {
-        if (!isResearcher) {
+        if (!isResearcher()) {
             System.out.println(getFullName() + " is not a researcher.");
             return;
         }
@@ -223,6 +217,6 @@ public class Teacher extends Employee implements Researcher {
     public String toString() {
         return super.toString() + ", status=" + status +
                 ", experience=" + yearsOfExperience +
-                ", isResearcher=" + isResearcher;
+                ", isResearcher=" + isResearcher();
     }
 }
