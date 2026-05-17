@@ -464,12 +464,17 @@ public class Main {
     // ==================== RESEARCH DEMO (TEACHER) ====================
 
     private static void researchDemoTeacher(Teacher teacher) {
-        System.out.println("\n--- RESEARCH DEMO (PROFESSOR) ---");
+        System.out.println("\n--- TEACHER RESEARCH DEMO ---");
 
-        // A professor is automatically treated as a researcher
+        // Professors are researchers automatically; other teachers can activate a research profile
         System.out.println("isProfessor: " + teacher.isProfessor());
         System.out.println("isResearcher: " + teacher.isResearcher());
-        teacher.setHIndex(5.5);
+        if (!teacher.isResearcher()) {
+            teacher.activateResearchProfile(5.5);
+            System.out.println("Research profile activated for " + teacher.getFullName());
+        } else {
+            teacher.setHIndex(5.5);
+        }
 
         ResearchPaper paper = new ResearchPaper("Deep Learning Survey",
                 "Nature", LocalDate.of(2024, 1, 15), 20);

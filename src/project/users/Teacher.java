@@ -17,7 +17,8 @@ public class Teacher extends Employee implements Researcher {
     private int yearsOfExperience;
     private Map<Student, Integer> ratings;
 
-    // Researcher өрістері
+    // Research fields
+    private boolean researcher;
     private List<ResearchPaper> papers;
     private List<ResearchProject> projects;
     private double hIndex;
@@ -34,7 +35,6 @@ public class Teacher extends Employee implements Researcher {
         super(fullName, email, password, id, position);
         this.status = status;
         this.yearsOfExperience = yearsOfExperience;
-        // PROFESSOR әрдайым researcher болады
         init();
     }
 
@@ -42,6 +42,7 @@ public class Teacher extends Employee implements Researcher {
         this.courses = new ArrayList<>();
         this.students = new ArrayList<>();
         this.ratings = new HashMap<>();
+        this.researcher = isProfessor();
         this.papers = new ArrayList<>();
         this.projects = new ArrayList<>();
         this.subscriptions = new ArrayList<>();
@@ -93,7 +94,7 @@ public class Teacher extends Employee implements Researcher {
             return;
         }
         System.out.println("Complaint [" + level + "]: " + complaint +
-                " — student: " + student.getFullName());
+                " - student: " + student.getFullName());
     }
 
     public void addRating(Student student, int rating) {
@@ -107,13 +108,18 @@ public class Teacher extends Employee implements Researcher {
                 .orElse(0.0);
     }
 
-    public TeacherStatus getStatus() { return status; }
-    public void setStatus(TeacherStatus status) {
-        this.status = status;
-        // Professor болса автоматты researcher
+    public TeacherStatus getStatus() {
+        return status;
     }
 
-    public int getYearsOfExperience() { return yearsOfExperience; }
+    public void setStatus(TeacherStatus status) {
+        this.status = status;
+    }
+
+    public int getYearsOfExperience() {
+        return yearsOfExperience;
+    }
+
     public void setYearsOfExperience(int yearsOfExperience) {
         this.yearsOfExperience = yearsOfExperience;
     }
@@ -122,11 +128,27 @@ public class Teacher extends Employee implements Researcher {
         return status == TeacherStatus.PROFESSOR;
     }
 
-    public boolean isResearcher() { return status == TeacherStatus.PROFESSOR; }
+    public boolean isResearcher() {
+        return isProfessor() || researcher;
+    }
 
     @Override
-    public double getHIndex() { return hIndex; }
-    public void setHIndex(double hIndex) { this.hIndex = hIndex; }
+    public double getHIndex() {
+        return hIndex;
+    }
+
+    public void setHIndex(double hIndex) {
+        if (!isResearcher()) {
+            System.out.println(getFullName() + " is not a researcher.");
+            return;
+        }
+        this.hIndex = hIndex;
+    }
+
+    public void activateResearchProfile(double hIndex) {
+        this.researcher = true;
+        this.hIndex = hIndex;
+    }
 
     @Override
     public List<ResearchPaper> getPapers() {
@@ -151,7 +173,9 @@ public class Teacher extends Employee implements Researcher {
             System.out.println(getFullName() + " is not a researcher.");
             return;
         }
-        if (!papers.contains(paper)) papers.add(paper);
+        if (!papers.contains(paper)) {
+            papers.add(paper);
+        }
     }
 
     @Override
@@ -191,7 +215,9 @@ public class Teacher extends Employee implements Researcher {
             System.out.println(getFullName() + " is not a researcher.");
             return;
         }
-        if (!papers.contains(paper)) papers.add(paper);
+        if (!papers.contains(paper)) {
+            papers.add(paper);
+        }
         news.announcePaper(paper);
     }
 
