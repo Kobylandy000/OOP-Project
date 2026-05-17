@@ -18,9 +18,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // ==================== ДЕРЕКТЕР ДАЙЫНДАУ ====================
+        // ==================== INITIAL DATA SETUP ====================
 
-        // Курстар
+        // Courses
         Course oop = new Course("OOP", LessonType.LECTURE, Language.EN,
                 CourseType.MAJOR, Faculty.IT, 5);
         Course math = new Course("Calculus", LessonType.PRACTICE, Language.KZ,
@@ -28,26 +28,26 @@ public class Main {
         Course ds = new Course("Data Structures", LessonType.LECTURE, Language.EN,
                 CourseType.MAJOR, Faculty.IT, 5);
 
-        // Мұғалімдер
+        // Teachers
         Teacher teacher1 = new Teacher("Aibek Seitkali", "aibek@uni.kz",
                 "teach123", 101, "Professor", TeacherStatus.PROFESSOR, 10);
         Teacher teacher2 = new Teacher("Zarina Bekova", "zarina@uni.kz",
                 "teach456", 102, "Senior Lecturer", TeacherStatus.SENIOR_LECTOR, 5);
 
-        // Студенттер
-        Student student1 = new Student("Arman Nurlanов", "arman@uni.kz",
+        // Students
+        Student student1 = new Student("Arman Nurlanov", "arman@uni.kz",
                 "stud123", 201, 3.5, Faculty.IT, 2);
         Student student2 = new Student("Dana Seitkali", "dana@uni.kz",
                 "stud456", 202, 3.8, Faculty.IT, 4);
 
-        // Менеджер
+        // Manager
         Manager manager = new Manager("Gulnara Abdova", "gulnara@uni.kz",
                 "man123", 301, "OR Manager", ManagerType.OFFICEREGISTRATION);
 
         // Admin
         Admin admin = Admin.getInstance();
 
-        // Барлығын admin-ге қос
+        // Add all users to the admin registry
         admin.addUser(teacher1);
         admin.addUser(teacher2);
         admin.addUser(student1);
@@ -69,31 +69,31 @@ public class Main {
             System.out.print("Password: ");
             String password = scanner.nextLine().trim();
 
-            // Барлық userлерден іздеу
+            // Search among all available users
             project.users.User authenticatedUser = authenticateUser(admin, email, password);
             if (authenticatedUser != null) {
-                    System.out.println("\nСәтті кірдіңіз! Қош келдіңіз, "
+                System.out.println("\nLogin successful! Welcome, "
                         + authenticatedUser.getFullName());
-                    loggedIn = true;
+                loggedIn = true;
                 runMenu(authenticatedUser, oop, math, ds, teacher1, teacher2,
                         student1, student2, manager);
             }
 
             if (!loggedIn) {
                 attempts++;
-                System.out.println("Қате email немесе пароль. "
-                        + (3 - attempts) + " мүмкіндік қалды.");
+                System.out.println("Invalid email or password. "
+                        + (3 - attempts) + " attempt(s) remaining.");
             }
         }
 
         if (!loggedIn) {
-            System.out.println("Жүйеге кіру мүмкін болмады.");
+            System.out.println("Unable to log into the system.");
         }
 
         scanner.close();
     }
 
-    // ==================== МЕНЮ ====================
+    // ==================== MENUS ====================
 
     private static project.users.User authenticateUser(Admin admin, String email, String password) {
         if (admin.login(email, password)) {
@@ -125,31 +125,31 @@ public class Main {
         }
     }
 
-    // ==================== STUDENT МЕНЮ ====================
+    // ==================== STUDENT MENU ====================
 
     private static void studentMenu(Student student, Course oop,
                                     Course math, Course ds, Teacher teacher) {
         boolean running = true;
         while (running) {
             System.out.println("\n--- STUDENT MENU: " + student.getFullName() + " ---");
-            System.out.println("1. Курсқа тіркелу");
-            System.out.println("2. Курстарды көру");
-            System.out.println("3. Бағаларды көру");
-            System.out.println("4. Транскрипт");
-            System.out.println("5. Мұғалімге баға беру");
+            System.out.println("1. Enroll in a course");
+            System.out.println("2. View courses");
+            System.out.println("3. View grades");
+            System.out.println("4. View transcript");
+            System.out.println("5. Rate a teacher");
             System.out.println("6. Research (joinProject, printPapers)");
-            System.out.println("0. Шығу");
-            System.out.print("Таңдаңыз: ");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1":
-                    System.out.println("\n-- Қолжетімді курстар --");
+                    System.out.println("\n-- Available courses --");
                     System.out.println("1. " + oop);
                     System.out.println("2. " + math);
                     System.out.println("3. " + ds);
-                    System.out.print("Курс таңдаңыз: ");
+                    System.out.print("Select a course: ");
                     String c = scanner.nextLine().trim();
                     if (c.equals("1")) student.enrollCourse(oop);
                     else if (c.equals("2")) student.enrollCourse(math);
@@ -157,18 +157,18 @@ public class Main {
                     break;
 
                 case "2":
-                    System.out.println("\n-- Тіркелген курстар --");
+                    System.out.println("\n-- Registered courses --");
                     if (student.viewCourses().isEmpty()) {
-                        System.out.println("Курс жоқ.");
+                        System.out.println("No courses found.");
                     } else {
                         student.viewCourses().forEach(System.out::println);
                     }
                     break;
 
                 case "3":
-                    System.out.println("\n-- Бағалар --");
+                    System.out.println("\n-- Grades --");
                     if (student.viewMarks().isEmpty()) {
-                        System.out.println("Баға жоқ.");
+                        System.out.println("No grades found.");
                     } else {
                         student.viewMarks().forEach((course, mark) ->
                                 System.out.println(course.getName() + ": " + mark));
@@ -180,12 +180,12 @@ public class Main {
                     break;
 
                 case "5":
-                    System.out.print("Рейтинг енгізіңіз (1-5): ");
+                    System.out.print("Enter a rating (1-5): ");
                     try {
                         int rating = Integer.parseInt(scanner.nextLine().trim());
                         student.rateTeacher(teacher, rating);
                     } catch (NumberFormatException e) {
-                        System.out.println("Қате сан.");
+                        System.out.println("Invalid number.");
                     }
                     break;
 
@@ -198,16 +198,16 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("Қате таңдау.");
+                    System.out.println("Invalid choice.");
             }
         }
     }
 
-    // ==================== TEACHER МЕНЮ ====================
+    // ==================== TEACHER MENU ====================
 
     private static void teacherMenu(Teacher teacher, Course oop,
                                     Student student1, Student student2) {
-        // Алдын ала мұғалімді курсқа тағайындау
+        // Assign the course and students to the teacher in advance
         teacher.manageCourse(oop);
         teacher.addStudent(student1);
         teacher.addStudent(student2);
@@ -215,50 +215,50 @@ public class Main {
         boolean running = true;
         while (running) {
             System.out.println("\n--- TEACHER MENU: " + teacher.getFullName() + " ---");
-            System.out.println("1. Курстарды көру");
-            System.out.println("2. Студенттерді көру");
-            System.out.println("3. Баға қою");
-            System.out.println("4. Орташа рейтинг");
+            System.out.println("1. View courses");
+            System.out.println("2. View students");
+            System.out.println("3. Assign grades");
+            System.out.println("4. View average rating");
             System.out.println("5. Research demo");
-            System.out.println("0. Шығу");
-            System.out.print("Таңдаңыз: ");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1":
-                    System.out.println("\n-- Курстар --");
+                    System.out.println("\n-- Courses --");
                     teacher.viewCourses().forEach(System.out::println);
                     break;
 
                 case "2":
-                    System.out.println("\n-- Студенттер --");
+                    System.out.println("\n-- Students --");
                     teacher.viewStudents().forEach(System.out::println);
                     break;
 
                 case "3":
-                    System.out.println("\n-- Баға қою --");
+                    System.out.println("\n-- Assign grades --");
                     System.out.println("1. " + student1.getFullName());
                     System.out.println("2. " + student2.getFullName());
-                    System.out.print("Студент таңдаңыз: ");
+                    System.out.print("Select a student: ");
                     String s = scanner.nextLine().trim();
                     Student target = s.equals("1") ? student1 : student2;
 
                     try {
-                        System.out.print("1-аттестация (0-30): ");
+                        System.out.print("First attestation (0-30): ");
                         double att1 = Double.parseDouble(scanner.nextLine().trim());
-                        System.out.print("2-аттестация (0-30): ");
+                        System.out.print("Second attestation (0-30): ");
                         double att2 = Double.parseDouble(scanner.nextLine().trim());
-                        System.out.print("Финал (0-40): ");
+                        System.out.print("Final exam (0-40): ");
                         double fin = Double.parseDouble(scanner.nextLine().trim());
                         teacher.putMarks(target, oop, att1, att2, fin);
                     } catch (NumberFormatException e) {
-                        System.out.println("Қате сан енгізілді.");
+                        System.out.println("Invalid number entered.");
                     }
                     break;
 
                 case "4":
-                    System.out.printf("Орташа рейтинг: %.1f%n",
+                    System.out.printf("Average rating: %.1f%n",
                             teacher.calculateAverageRating());
                     break;
 
@@ -271,12 +271,12 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("Қате таңдау.");
+                    System.out.println("Invalid choice.");
             }
         }
     }
 
-    // ==================== MANAGER МЕНЮ ====================
+    // ==================== MANAGER MENU ====================
 
     private static void managerMenu(Manager manager, Course oop, Course math,
                                     Course ds, Teacher teacher1, Teacher teacher2,
@@ -289,14 +289,14 @@ public class Main {
         boolean running = true;
         while (running) {
             System.out.println("\n--- MANAGER MENU: " + manager.getFullName() + " ---");
-            System.out.println("1. Студентті бекіту");
-            System.out.println("2. Мұғалімге курс тағайындау");
-            System.out.println("3. Студенттерді GPA бойынша көру");
-            System.out.println("4. Студенттерді аты бойынша көру");
-            System.out.println("5. Есеп жасау");
-            System.out.println("6. Жаңалық қосу");
-            System.out.println("0. Шығу");
-            System.out.print("Таңдаңыз: ");
+            System.out.println("1. Approve students");
+            System.out.println("2. Assign a course to a teacher");
+            System.out.println("3. View students by GPA");
+            System.out.println("4. View students by name");
+            System.out.println("5. Generate report");
+            System.out.println("6. Add news");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine().trim();
 
@@ -312,14 +312,14 @@ public class Main {
                     break;
 
                 case "3":
-                    System.out.println("\n-- GPA бойынша --");
+                    System.out.println("\n-- Students sorted by GPA --");
                     manager.viewStudents(SortingCriteria.GPA)
                             .forEach(st -> System.out.println(
-                                    st.getFullName() + " — GPA: " + st.getGpa()));
+                                    st.getFullName() + " - GPA: " + st.getGpa()));
                     break;
 
                 case "4":
-                    System.out.println("\n-- Аты бойынша --");
+                    System.out.println("\n-- Students sorted by name --");
                     manager.viewStudents(SortingCriteria.NAME)
                             .forEach(st -> System.out.println(st.getFullName()));
                     break;
@@ -329,9 +329,9 @@ public class Main {
                     break;
 
                 case "6":
-                    System.out.print("Жаңалық тақырыбы: ");
+                    System.out.print("News title: ");
                     String title = scanner.nextLine().trim();
-                    System.out.print("Мазмұны: ");
+                    System.out.print("Content: ");
                     String content = scanner.nextLine().trim();
                     manager.addNews(new News(title, content, "General"));
                     break;
@@ -341,51 +341,55 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("Қате таңдау.");
+                    System.out.println("Invalid choice.");
             }
         }
     }
 
-    // ==================== ADMIN МЕНЮ ====================
+    // ==================== ADMIN MENU ====================
 
     private static void adminMenu(Admin admin) {
         boolean running = true;
         while (running) {
             System.out.println("\n--- ADMIN MENU ---");
-            System.out.println("1. Барлық userлерді көру");
-            System.out.println("2. User іздеу (аты бойынша)");
-            System.out.println("3. User жою");
-            System.out.println("4. Логтарды көру");
-            System.out.println("0. Шығу");
-            System.out.print("Таңдаңыз: ");
+            System.out.println("1. View all users");
+            System.out.println("2. Search for a user by name");
+            System.out.println("3. Remove a user");
+            System.out.println("4. View logs");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
 
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
                 case "1":
-                    System.out.println("\n-- Барлық userлер --");
+                    System.out.println("\n-- All users --");
                     admin.getUsers().forEach(System.out::println);
                     break;
 
                 case "2":
-                    System.out.print("Аты: ");
+                    System.out.print("Name: ");
                     String name = scanner.nextLine().trim();
                     project.users.User found = admin.findUserByName(name);
-                    if (found != null) System.out.println("Табылды: " + found);
+                    if (found != null) {
+                        System.out.println("Found: " + found);
+                    } else {
+                        System.out.println("User not found.");
+                    }
                     break;
 
                 case "3":
-                    System.out.print("ID енгізіңіз: ");
+                    System.out.print("Enter ID: ");
                     try {
                         int id = Integer.parseInt(scanner.nextLine().trim());
                         admin.removeUser(id);
                     } catch (NumberFormatException e) {
-                        System.out.println("Қате ID.");
+                        System.out.println("Invalid ID.");
                     }
                     break;
 
                 case "4":
-                    System.out.println("\n-- Логтар --");
+                    System.out.println("\n-- Logs --");
                     admin.viewLogs().forEach(System.out::println);
                     break;
 
@@ -394,7 +398,7 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("Қате таңдау.");
+                    System.out.println("Invalid choice.");
             }
         }
     }
@@ -404,10 +408,10 @@ public class Main {
     private static void researchDemoStudent(Student student) {
         System.out.println("\n--- RESEARCH DEMO ---");
 
-        // Студентті researcher ет
+        // Make the student a researcher
         student.activateResearchProfile(4.0);
 
-        // Мақала жасау
+        // Create research papers
         ResearchPaper paper1 = new ResearchPaper("AI in Education",
                 "IEEE Journal", LocalDate.of(2023, 5, 10), 12);
         paper1.setDoi("10.1109/AI.2023.001");
@@ -425,29 +429,29 @@ public class Main {
         ResearchProject project = new ResearchProject("AI Research 2024");
         try {
             student.joinProject(project);
-            System.out.println("Студент жобаға қосылды!");
+            System.out.println("The student joined the project.");
         } catch (NonResearchException e) {
-            System.out.println("Қате: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
 
-        // Researcher емес студент
+        // Student without researcher status
         Student nonResearcher = new Student("Test Student", "test@uni.kz",
                 "test", 999, 3.0, Faculty.IT, 1);
-        System.out.println("\n-- Researcher емес студент joinProject жасаса --");
+        System.out.println("\n-- A non-research student tries to join the project --");
         try {
             nonResearcher.joinProject(project);
         } catch (NonResearchException e) {
-            System.out.println("Exception ұсталды: " + e.getMessage());
+            System.out.println("Exception thrown: " + e.getMessage());
         }
 
-        // Мақалаларды сұрыптау
-        System.out.println("\n-- Citations бойынша --");
+        // Sort papers
+        System.out.println("\n-- Sorted by citations --");
         student.printPapers(Comparator.comparingInt(ResearchPaper::getCitationsCount).reversed());
 
-        System.out.println("\n-- Күні бойынша --");
+        System.out.println("\n-- Sorted by date --");
         student.printPapers(Comparator.comparing(ResearchPaper::getDatePublished));
 
-        System.out.println("\n-- Беттер бойынша --");
+        System.out.println("\n-- Sorted by page count --");
         student.printPapers(Comparator.comparingInt(ResearchPaper::getPages).reversed());
 
         // Publisher (Observer pattern)
@@ -462,7 +466,7 @@ public class Main {
     private static void researchDemoTeacher(Teacher teacher) {
         System.out.println("\n--- RESEARCH DEMO (PROFESSOR) ---");
 
-        // Professor автоматты researcher
+        // A professor is automatically treated as a researcher
         System.out.println("isProfessor: " + teacher.isProfessor());
         System.out.println("isResearcher: " + teacher.isResearcher());
         teacher.setHIndex(5.5);
@@ -480,10 +484,10 @@ public class Main {
         try {
             teacher.joinProject(project);
         } catch (NonResearchException e) {
-            System.out.println("Қате: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
 
-        System.out.println("\n-- Мақалалар citations бойынша --");
+        System.out.println("\n-- Papers sorted by citations --");
         teacher.printPapers(Comparator.comparingInt(ResearchPaper::getCitationsCount).reversed());
     }
 }
