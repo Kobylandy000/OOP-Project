@@ -1,6 +1,6 @@
 # University Management System
 
-Created by: [Tynyshtyk Alis](https://github.com/App1epli), [Kobylandy000](https://github.com/Kobylandy000)
+Created by: [Tynyshtyk Alis](https://github.com/App1epli), [Kobylandy000](https://github.com/Kobylandy000),[Ruslan Myrzabayev](https://github.com/Rusikkooo)
 
 A console-based Java project for Object-Oriented Programming that models a university information system.
 
