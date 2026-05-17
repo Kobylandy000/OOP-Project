@@ -8,8 +8,9 @@ import project.models.UniversityJournal;
 
 import java.util.Comparator;
 import java.util.List;
+import java.io.Serializable;
 
-public interface Researcher {
+public interface Researcher extends Serializable {
 
     // Research методтары
     List<ResearchProject> getProjects();

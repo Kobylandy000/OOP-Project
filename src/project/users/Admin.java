@@ -28,6 +28,16 @@ public class Admin extends Employee {
         }
         return instance;
     }
+    public static void setInstance(Admin loadedAdmin) {
+        if (loadedAdmin != null) {
+            instance = loadedAdmin;
+        }
+    }
+
+    private Object readResolve() {
+        instance = this;
+        return this;
+    }
 
     // ==================== USER БАСҚАРУ ====================
 

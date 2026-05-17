@@ -14,47 +14,41 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
+import project.storage.AppData;
+import project.storage.DataRepository;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+// ==================== LOAD OR CREATE DATA ====================
+        DataRepository repository = DataRepository.getInstance();
 
-        // ==================== INITIAL DATA SETUP ====================
+        AppData data = repository.load();
 
-        // Courses
-        Course oop = new Course("OOP", LessonType.LECTURE, Language.EN,
-                CourseType.MAJOR, Faculty.IT, 5);
-        Course math = new Course("Calculus", LessonType.PRACTICE, Language.KZ,
-                CourseType.MAJOR, Faculty.IT, 4);
-        Course ds = new Course("Data Structures", LessonType.LECTURE, Language.EN,
-                CourseType.MAJOR, Faculty.IT, 5);
+        if (data == null || data.isEmpty()) {
+            data = createDefaultData();
+            repository.save(data);
+        }
 
-        // Teachers
-        Teacher teacher1 = new Teacher("Aibek Seitkali", "aibek@uni.kz",
-                "teach123", 101, "Professor", TeacherStatus.PROFESSOR, 10);
-        Teacher teacher2 = new Teacher("Zarina Bekova", "zarina@uni.kz",
-                "teach456", 102, "Senior Lecturer", TeacherStatus.SENIOR_LECTOR, 5);
+        Admin admin = data.getAdmin();
+        Admin.setInstance(admin);
 
-        // Students
-        Student student1 = new Student("Arman Nurlanov", "arman@uni.kz",
-                "stud123", 201, 3.5, Faculty.IT, 2);
-        Student student2 = new Student("Dana Seitkali", "dana@uni.kz",
-                "stud456", 202, 3.8, Faculty.IT, 4);
 
-        // Manager
-        Manager manager = new Manager("Gulnara Abdova", "gulnara@uni.kz",
-                "man123", 301, "OR Manager", ManagerType.OFFICEREGISTRATION);
+        Course oop = data.findCourseByName("OOP");
+        Course math = data.findCourseByName("Calculus");
+        Course ds = data.findCourseByName("Data Structures");
 
-        // Admin
-        Admin admin = Admin.getInstance();
+        Teacher teacher1 = (Teacher) data.findUserByEmail("aibek@uni.kz");
+        Teacher teacher2 = (Teacher) data.findUserByEmail("zarina@uni.kz");
 
-        // Add all users to the admin registry
-        admin.addUser(teacher1);
-        admin.addUser(teacher2);
-        admin.addUser(student1);
-        admin.addUser(student2);
-        admin.addUser(manager);
+        Student student1 = (Student) data.findUserByEmail("arman@uni.kz");
+        Student student2 = (Student) data.findUserByEmail("dana@uni.kz");
+
+        Manager manager = (Manager) data.findUserByEmail("gulnara@uni.kz");
 
         // ==================== AUTHENTICATION ====================
 
@@ -91,9 +85,60 @@ public class Main {
         if (!loggedIn) {
             System.out.println("Unable to log into the system.");
         }
-
+        repository.save(data);
         scanner.close();
     }
+    private static AppData createDefaultData() {
+
+        // Courses
+        Course oop = new Course("OOP", LessonType.LECTURE, Language.EN,
+                CourseType.MAJOR, Faculty.IT, 5);
+
+        Course math = new Course("Calculus", LessonType.PRACTICE, Language.KZ,
+                CourseType.MAJOR, Faculty.IT, 4);
+
+        Course ds = new Course("Data Structures", LessonType.LECTURE, Language.EN,
+                CourseType.MAJOR, Faculty.IT, 5);
+
+        // Teachers
+        Teacher teacher1 = new Teacher("Aibek Seitkali", "aibek@uni.kz",
+                "teach123", 101, "Professor", TeacherStatus.PROFESSOR, 10);
+
+        Teacher teacher2 = new Teacher("Zarina Bekova", "zarina@uni.kz",
+                "teach456", 102, "Senior Lecturer", TeacherStatus.SENIOR_LECTOR, 5);
+
+        // Students
+        Student student1 = new Student("Arman Nurlanov", "arman@uni.kz",
+                "stud123", 201, 3.5, Faculty.IT, 2);
+
+        Student student2 = new Student("Dana Seitkali", "dana@uni.kz",
+                "stud456", 202, 3.8, Faculty.IT, 4);
+
+        // Manager
+        Manager manager = new Manager("Gulnara Abdova", "gulnara@uni.kz",
+                "man123", 301, "OR Manager", ManagerType.OFFICEREGISTRATION);
+
+        // Admin
+        Admin admin = Admin.getInstance();
+
+        admin.addUser(teacher1);
+        admin.addUser(teacher2);
+        admin.addUser(student1);
+        admin.addUser(student2);
+        admin.addUser(manager);
+
+        List<Course> courses = new ArrayList<>();
+        courses.add(oop);
+        courses.add(math);
+        courses.add(ds);
+
+        List<ResearchPaper> researchPapers = new ArrayList<>();
+        List<ResearchProject> researchProjects = new ArrayList<>();
+        List<News> news = new ArrayList<>();
+
+        return new AppData(admin, courses, researchPapers, researchProjects, news);
+    }
+
 
     // ==================== AUTHENTICATION ====================
 
