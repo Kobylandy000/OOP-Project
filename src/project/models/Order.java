@@ -2,75 +2,58 @@ package project.models;
 
 import project.enums.Status;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class Order {
+public class Order implements Serializable {
+    private static final long serialVersionUID = 16L;
+
     private int orderId;
     private String description;
     private Status status;
+    private LocalDateTime createdAt;
+
+    public Order() {}
 
     public Order(int orderId, String description, Status status) {
         this.orderId = orderId;
         this.description = description;
         this.status = status;
+        this.createdAt = LocalDateTime.now();
     }
 
-    public int getOrderId() {
-        return orderId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return orderId == order.orderId;
     }
 
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderId);
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public int getOrderId() { return orderId; }
+    public void setOrderId(int orderId) { this.orderId = orderId; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public Status getStatus() {
-        return status;
-    }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public boolean isNew() {
-        return this.status == Status.PENDING;
-    }
-
-    public static List<Order> filterOrders(List<Order> orders, Status status) {
-        List<Order> filteredOrders = new ArrayList<>();
-        for (Order order : orders) {
-            if (order.getStatus() == status) {
-                filteredOrders.add(order);
-            }
-        }
-        return filteredOrders;
-    }
-
-    public static List<Order> getAcceptedNotDoneOrders(List<Order> orders) {
-        List<Order> filteredOrders = new ArrayList<>();
-        for (Order order : orders) {
-            if (order.getStatus() == Status.ACCEPTED) {
-                filteredOrders.add(order);
-            }
-        }
-        return filteredOrders;
-    }
-
-    public static List<Order> getDoneOrders(List<Order> orders) {
-        List<Order> filteredOrders = new ArrayList<>();
-        for (Order order : orders) {
-            if (order.getStatus() == Status.COMPLETED) {
-                filteredOrders.add(order);
-            }
-        }
-        return filteredOrders;
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + orderId +
+                ", description='" + description + "'" +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                "}";
     }
 }

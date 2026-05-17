@@ -11,6 +11,8 @@ public abstract class Employee extends User {
     private List<Message> receivedMessages;
     private List<Message> sentMessages;
 
+    private static final long serialVersionUID = 2L;
+
 
     public Employee() {
         super();
@@ -65,6 +67,6 @@ public abstract class Employee extends User {
 
     @Override
     public String toString() {
-        return "position='" + position + '\'' + super.toString();
+        return super.toString() + ", position='" + position + "'";
     }
 }

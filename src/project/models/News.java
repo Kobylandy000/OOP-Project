@@ -1,105 +1,86 @@
 package project.models;
 
-import project.users.User;
+import project.interfaces.Researcher;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
-public class News {
+public class News implements Serializable {
+    private static final long serialVersionUID = 14L;
+
     private String title;
     private String content;
     private String topic;
-    private List<String> comments;
-    private List<News> newsList = new ArrayList<>();
     private boolean pinned;
-    private List<User> subscribers = new ArrayList<>();
+    private LocalDateTime createdAt;
+    private List<String> comments;
+
+    public News() {
+        this.comments = new ArrayList<>();
+        this.createdAt = LocalDateTime.now();
+    }
 
     public News(String title, String content, String topic) {
         this.title = title;
         this.content = content;
         this.topic = topic;
         this.pinned = "Research".equalsIgnoreCase(topic);
+        this.createdAt = LocalDateTime.now();
         this.comments = new ArrayList<>();
     }
-
-
-    public void subscribe(User user) {
-        if (!subscribers.contains(user)) {
-            subscribers.add(user);
-        }
-    }
-
-    public void unsubscribe(User user) {
-        subscribers.remove(user);
-    }
-
 
     public void addComment(String comment) {
         comments.add(comment);
     }
 
-    public String getTitle() {
-        return title;
+    public void announcePaper(ResearchPaper paper) {
+        System.out.println("=== NEW PAPER ANNOUNCED ===");
+        System.out.println("Title  : " + paper.getTitle());
+        System.out.println("Journal: " + paper.getJournal());
+        System.out.println("Date   : " + paper.getDatePublished());
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        News news = (News) o;
+        return Objects.equals(title, news.title) &&
+                Objects.equals(createdAt, news.createdAt);
     }
 
-    public String getContent() {
-        return content;
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, createdAt);
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getTopic() {
-        return topic;
-    }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
 
+    public String getTopic() { return topic; }
     public void setTopic(String topic) {
         this.topic = topic;
         this.pinned = "Research".equalsIgnoreCase(topic);
     }
 
-    public boolean isPinned() {
-        return pinned;
-    }
-
-    private void prioritizeNews() {
-        newsList.sort(Comparator.comparing(News::isPinned).reversed());
-    }
-
-    public void addNews(News news) {
-        newsList.add(news);
-        prioritizeNews();
-    }
-
-    public void announcePaper(ResearchPaper paper) {
-        News announcement = new News(
-                "New Research Paper Published!",
-                String.format(
-                        "A new research paper titled '%s' has been published in the journal '%s'.",
-                        paper.getTitle(),
-                        paper.getJournal()
-                ),
-                "Research"
-        );
-        for (User subscriber : subscribers) {
-            addNews(announcement);
-            subscriber.notifySubscription(paper);
-        }
-    }
-
-    public List<String> getComments() {
-        return new ArrayList<>(comments);
-    }
+    public boolean isPinned() { return pinned; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public List<String> getComments() { return new ArrayList<>(comments); }
 
     @Override
     public String toString() {
-        return String.format("Title: %s\nTopic: %s\nContent: %s\nComments: %s",
-                title, topic, content, comments.isEmpty() ? "No comments yet." : comments);
+        return "News{" +
+                "title='" + title + "'" +
+                ", topic='" + topic + "'" +
+                ", pinned=" + pinned +
+                ", createdAt=" + createdAt +
+                "}";
     }
 }

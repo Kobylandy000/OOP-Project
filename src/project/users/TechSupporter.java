@@ -7,22 +7,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TechSupporter extends Employee {
-    private List<Order> orders = new ArrayList<>();
+    private static final long serialVersionUID = 19L;
 
-    public List<Order> viewOrder(Status status) {
-        List<Order> filteredOrders = new ArrayList<>();
-        for (Order order : orders) {
-            if (order.getStatus().equals(status)) {
-                filteredOrders.add(order);
-            }
+    private List<Order> orders;
+
+    public TechSupporter() {
+        super();
+        this.orders = new ArrayList<>();
+    }
+
+    public TechSupporter(String fullName, String email, String password,
+                         int id, String position) {
+        super(fullName, email, password, id, position);
+        this.orders = new ArrayList<>();
+    }
+
+    public void addOrder(Order order) {
+        if (!orders.contains(order)) {
+            orders.add(order);
+            System.out.println("Order added: " + order.getOrderId());
         }
-        return filteredOrders;
     }
 
     public void acceptOrder(Order order) {
         if (orders.contains(order)) {
             order.setStatus(Status.ACCEPTED);
-            System.out.println("Order " + order.getOrderId() + " accepted.");
+            System.out.println("Order accepted: " + order.getOrderId());
         } else {
             System.out.println("Order not found.");
         }
@@ -31,27 +41,39 @@ public class TechSupporter extends Employee {
     public void rejectOrder(Order order) {
         if (orders.contains(order)) {
             order.setStatus(Status.REJECTED);
-            System.out.println("Order " + order.getOrderId() + " rejected.");
+            System.out.println("Order rejected: " + order.getOrderId());
         } else {
             System.out.println("Order not found.");
         }
     }
 
-    public void addOrder(Order order) {
-        if (!orders.contains(order)) {
-            orders.add(order);
-            System.out.println("Order " + order.getOrderId() + " added.");
+    public void completeOrder(Order order) {
+        if (orders.contains(order)) {
+            order.setStatus(Status.COMPLETED);
+            System.out.println("Order completed: " + order.getOrderId());
         } else {
-            System.out.println("Order " + order.getOrderId() + " already exists.");
+            System.out.println("Order not found.");
         }
     }
 
     public void removeOrder(Order order) {
-        if (orders.contains(order)) {
-            orders.remove(order);
-            System.out.println("Order " + order.getOrderId() + " removed.");
-        } else {
-            System.out.println("Order not found.");
+        orders.remove(order);
+    }
+
+    public List<Order> viewOrder(Status status) {
+        List<Order> filtered = new ArrayList<>();
+        for (Order order : orders) {
+            if (order.getStatus() == status) filtered.add(order);
         }
+        return filtered;
+    }
+
+    public List<Order> getAllOrders() {
+        return new ArrayList<>(orders);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", orders=" + orders.size();
     }
 }

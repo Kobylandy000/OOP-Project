@@ -1,73 +1,72 @@
 package project.models;
 
 import project.users.Employee;
-import project.users.User;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
+public class Message implements Serializable {
+    private static final long serialVersionUID = 12L;
 
-public class Message {
     private Employee sender;
     private Employee receiver;
     private String content;
-    private LocalDate timeStamp;
+    private LocalDateTime timestamp;
     private boolean isRead;
 
-
+    public Message() {}
 
     public Message(Employee sender, Employee receiver, String content) {
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
-        this.timeStamp = LocalDate.now();
+        this.timestamp = LocalDateTime.now();
         this.isRead = false;
     }
 
-
-    public void sendMessage() {
-
-        receiver.receiveMessage(this);
-
-        System.out.println("Message sent successfully from " + sender.getFullName() + " to " + receiver.getFullName());
-    }
+    // ==================== МЕТОДТАР ====================
 
     public void markAsRead() {
         this.isRead = true;
-        System.out.println("Message from " + sender.getFullName() + " has been marked as read.");
     }
 
-    public String getContent() {
-        return content;
+    // ==================== EQUALS / HASHCODE ====================
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(sender, message.sender) &&
+                Objects.equals(receiver, message.receiver) &&
+                Objects.equals(timestamp, message.timestamp);
     }
 
-    public User getSenderInfo() {
-        return sender;
+    @Override
+    public int hashCode() {
+        return Objects.hash(sender, receiver, timestamp);
     }
 
+    // ==================== GETTERS / SETTERS ====================
 
-    public User getReceiverInfo() {
-        return receiver;
-    }
+    public Employee getSender() { return sender; }
+    public Employee getReceiver() { return receiver; }
 
-    public LocalDate getTimeStamp() {
-        return timeStamp;
-    }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
 
-    public boolean isRead() {
-        return isRead;
-    }
-
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public boolean isRead() { return isRead; }
 
     @Override
     public String toString() {
         return "Message{" +
-                "Sender=" + sender.getFullName() +
-                ", Receiver=" + receiver.getFullName() +
-                ", Content='" + content + '\'' +
-                ", TimeStamp=" + timeStamp +
-                ", IsRead=" + isRead +
-                '}';
+                "from=" + sender.getFullName() +
+                ", to=" + receiver.getFullName() +
+                ", content='" + content + "'" +
+                ", time=" + timestamp +
+                ", isRead=" + isRead +
+                "}";
     }
 }

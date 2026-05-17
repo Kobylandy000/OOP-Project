@@ -7,71 +7,117 @@ import project.enums.LessonType;
 import project.users.Student;
 import project.users.Teacher;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
-public class Course {
+public class Course implements Serializable {
+    private static final long serialVersionUID = 9L;
+
     private String name;
-    private LessonType type;
-    private List<Teacher> instructors;
-    private Faculty faculty;
+    private LessonType lessonType;
     private Language language;
-    private List<Student> students;
     private CourseType courseType;
+    private Faculty faculty;
+    private int credits;
+    private List<Teacher> instructors;
+    private List<Student> students;
 
-    public Course(String name, LessonType type, Language language, CourseType courseType, Faculty faculty) {
+    public Course() {
         this.instructors = new ArrayList<>();
         this.students = new ArrayList<>();
+    }
+
+    public Course(String name, LessonType lessonType, Language language,
+                  CourseType courseType, Faculty faculty, int credits) {
         this.name = name;
-        this.type = type;
+        this.lessonType = lessonType;
         this.language = language;
         this.courseType = courseType;
         this.faculty = faculty;
+        this.credits = credits;
+        this.instructors = new ArrayList<>();
+        this.students = new ArrayList<>();
     }
 
+    // ==================== МЕТОДТАР ====================
+
     public void addInstructor(Teacher teacher) {
-        instructors.add(teacher);
+        if (teacher != null && !instructors.contains(teacher)) {
+            instructors.add(teacher);
+        }
+    }
+
+    public void removeInstructor(Teacher teacher) {
+        instructors.remove(teacher);
     }
 
     public void registerStudent(Student student) {
-        students.add(student);
+        if (student != null && !students.contains(student)) {
+            students.add(student);
+        }
     }
 
-    public String getName() {
-        return name;
+    public void removeStudent(Student student) {
+        students.remove(student);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public boolean isFreeElectiveFor(Faculty studentFaculty) {
+        return this.courseType == CourseType.ELECTIVE &&
+                this.faculty != studentFaculty;
     }
 
-    public List<Student> getStudents() {
-        return new ArrayList<>(students);
+    // ==================== EQUALS / HASHCODE ====================
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return Objects.equals(name, course.name) &&
+                Objects.equals(faculty, course.faculty);
     }
 
-    public Set<Teacher> getInstructors() {
-        return new HashSet<>(instructors);
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, faculty);
     }
 
-    public Faculty getFaculty() {
-        return faculty;
+    // ==================== GETTERS / SETTERS ====================
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public LessonType getLessonType() { return lessonType; }
+    public void setLessonType(LessonType lessonType) {
+        this.lessonType = lessonType;
     }
 
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
+    public Language getLanguage() { return language; }
+    public void setLanguage(Language language) { this.language = language; }
 
-    public CourseType getCourseType() {
-        return courseType;
-    }
-
+    public CourseType getCourseType() { return courseType; }
     public void setCourseType(CourseType courseType) {
         this.courseType = courseType;
     }
 
-    public boolean isFreeElectiveFor(Faculty studentFaculty) {
-        return this.courseType == CourseType.MAJOR && this.faculty != studentFaculty;
+    public Faculty getFaculty() { return faculty; }
+    public void setFaculty(Faculty faculty) { this.faculty = faculty; }
+
+    public int getCredits() { return credits; }
+    public void setCredits(int credits) { this.credits = credits; }
+
+    public List<Teacher> getInstructors() { return new ArrayList<>(instructors); }
+    public List<Student> getStudents() { return new ArrayList<>(students); }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "name='" + name + "'" +
+                ", lessonType=" + lessonType +
+                ", credits=" + credits +
+                ", faculty=" + faculty +
+                "}";
     }
 }

@@ -1,6 +1,5 @@
 package project.enums;
 
 public enum Faculty {
-    SITE, OILGAS;
-    
+    SITE, OILGAS, IT;
 }

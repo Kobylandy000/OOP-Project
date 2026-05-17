@@ -12,13 +12,13 @@ public class UserFactory {
 
     public static User getUser(String type, String fullName, String email, String password, int id,
                                String position, double gpa, Faculty faculty, boolean isProfessor,
-                               TeacherStatus status, int yearsOfExperience, ManagerType managerType) {
+                               TeacherStatus status, int yearsOfExperience, ManagerType managerType, int year) {
         switch (type) {
             case "STUDENT":
-                return new Student(fullName, email, password, id, gpa, faculty);
+                return new Student(fullName, email, password, id, gpa, faculty, year);
 
             case "TEACHER":
-                return new Teacher(fullName, email, password, id, position, isProfessor, status, yearsOfExperience);
+                return new Teacher(fullName, email, password, id, position, status, yearsOfExperience);
 
             case "MANAGER":
                 return new Manager(fullName, email, password, id, position, managerType);

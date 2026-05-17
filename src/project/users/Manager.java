@@ -5,9 +5,10 @@ import project.enums.SortingCriteria;
 import project.models.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Manager extends Employee {
+    private static final long serialVersionUID = 5L;
+
     private ManagerType managerType;
     private List<News> news;
     private List<Student> students;
@@ -16,142 +17,166 @@ public class Manager extends Employee {
 
     public Manager() {
         super();
+        init();
+    }
+
+    public Manager(String fullName, String email, String password,
+                   int id, String position, ManagerType managerType) {
+        super(fullName, email, password, id, position);
+        this.managerType = managerType;
+        init();
+    }
+
+    private void init() {
         this.news = new ArrayList<>();
         this.students = new ArrayList<>();
         this.teachers = new ArrayList<>();
         this.employeeRequests = new ArrayList<>();
     }
 
-    public Manager(String fullName, String email, String password, int id, String position, ManagerType managerType) {
-        super(fullName, email, password, id, position);
-        this.managerType = managerType;
-        this.news = new ArrayList<>();
-        this.students = new ArrayList<>();
-        this.employeeRequests = new ArrayList<>();
-    }
-
-    public List<Teacher> getTeachers() {
-        return new ArrayList<>(teachers);
-    }
-
-    public void addTeacher(Teacher teacher) {
-        teachers.add(teacher);
-    }
-
-
-
+    // ==================== STUDENT БАСҚАРУ ====================
 
     public void approveStudent(Student student) {
         if (!students.contains(student)) {
             students.add(student);
             System.out.println("Student " + student.getFullName() + " approved.");
         } else {
-            System.out.println("Student " + student.getFullName() + " is already approved.");
+            System.out.println("Student already approved.");
         }
     }
 
-    public void addCourse(Course course, Major major, int year) {
-        major.addCourseForYear(course, year);
-        System.out.println("Course " + course.getName() + " added for Major: " + major.getName() + ", Year: " + year);
+    public void addStudent(Student student) {
+        if (!students.contains(student)) {
+            students.add(student);
+        }
+    }
+
+    // ==================== TEACHER БАСҚАРУ ====================
+
+    public void addTeacher(Teacher teacher) {
+        if (!teachers.contains(teacher)) {
+            teachers.add(teacher);
+        }
     }
 
     public void assignCourseToTeacher(Course course, Teacher teacher) {
         teacher.manageCourse(course);
-        System.out.println("Course " + course.getName() + " assigned to Teacher: " + teacher.getFullName());
+        System.out.println("Course " + course.getName() +
+                " assigned to " + teacher.getFullName());
     }
+
+    // ==================== COURSE БАСҚАРУ ====================
+
+    public void addCourse(Course course, Major major, int year) {
+        major.addCourseForYear(course, year);
+        System.out.println("Course " + course.getName() +
+                " added for year " + year);
+    }
+
+    // ==================== REPORT ====================
 
     public Report generateReport() {
         Report report = new Report();
 
-        double totalGpa = 0.0;
-        for (Student student : students) {
-            totalGpa += student.getGpa();
-        }
-        double averageGpa;
-        if (students.isEmpty()) {
-            averageGpa = 0.0;
-        } else {
-            averageGpa = totalGpa / students.size();
-        }
-
-        report.setAverageGpa(averageGpa);
+        // Жалпы статистика
         report.setTotalStudents(students.size());
+        report.setTotalTeachers(teachers.size());
 
-        System.out.println("Report generated: Average GPA = " + averageGpa + ", Total Students = " + students.size());
+        // GPA статистикасы
+        if (!students.isEmpty()) {
+            double totalGpa = 0;
+            double maxGpa = Double.MIN_VALUE;
+            double minGpa = Double.MAX_VALUE;
+            int failCount = 0;
 
+            for (Student s : students) {
+                totalGpa += s.getGpa();
+                if (s.getGpa() > maxGpa) maxGpa = s.getGpa();
+                if (s.getGpa() < minGpa) minGpa = s.getGpa();
+                if (s.getGpa() < 2.0) failCount++;
+            }
+
+            report.setAverageGpa(totalGpa / students.size());
+            report.setMaxGpa(maxGpa);
+            report.setMinGpa(minGpa);
+            report.setFailingStudents(failCount);
+        }
+
+        System.out.println(report);
         return report;
     }
-    public List<?> viewInfo(SortingCriteria criteria, String type) {
-        if ("students".equalsIgnoreCase(type)) {
-            return sortStudents(criteria);
-        } else if ("teachers".equalsIgnoreCase(type)) {
-            return sortTeachers(criteria);
+
+    // ==================== VIEW INFO ====================
+
+    public List<Student> viewStudents(SortingCriteria criteria) {
+        List<Student> sorted = new ArrayList<>(students);
+        switch (criteria) {
+            case GPA:
+                Collections.sort(sorted); // Comparable пайдаланады
+                break;
+            case NAME:
+                sorted.sort(Comparator.comparing(Student::getFullName));
+                break;
         }
-        return new ArrayList<>();
+        return sorted;
     }
 
-    private List<Student> sortStudents(SortingCriteria criteria) {
-        List<Student> sortedStudents = new ArrayList<>(students);
-
-        if (criteria == SortingCriteria.GPA) {
-            sortedStudents.sort(new Comparator<Student>() {
-                @Override
-                public int compare(Student s1, Student s2) {
-                    return Double.compare(s2.getGpa(), s1.getGpa());
-                }
-            });
-        } else if (criteria == SortingCriteria.NAME) {
-            sortedStudents.sort(new Comparator<Student>() {
-                @Override
-                public int compare(Student s1, Student s2) {
-                    return s1.getFullName().compareTo(s2.getFullName());
-                }
-            });
-        }
-
-        return sortedStudents;
-    }
-
-
-    private List<Teacher> sortTeachers(SortingCriteria criteria) {
-        List<Teacher> teachers = getTeachers();
+    public List<Teacher> viewTeachers(SortingCriteria criteria) {
+        List<Teacher> sorted = new ArrayList<>(teachers);
         switch (criteria) {
             case NAME:
-                teachers.sort(Comparator.comparing(Teacher::getFullName));
+                sorted.sort(Comparator.comparing(Teacher::getFullName));
                 break;
             case EXPERIENCE:
-                teachers.sort(Comparator.comparingInt(Teacher::getYearsOfExperience).reversed());
+                sorted.sort(Comparator.comparingInt(
+                        Teacher::getYearsOfExperience).reversed());
                 break;
         }
-        return teachers;
+        return sorted;
     }
 
+    // ==================== NEWS ====================
 
-    public void prioritizeNews(String topic) {
-        Collections.sort(news, (n1, n2) -> {
-            if (n1.getTopic().equalsIgnoreCase(topic) && !n2.getTopic().equalsIgnoreCase(topic)) {
-                return -1;
-            } else if (!n1.getTopic().equalsIgnoreCase(topic) && n2.getTopic().equalsIgnoreCase(topic)) {
-                return 1;
-            }
-            return 0;
-        });
-        System.out.println("News prioritized by topic: " + topic);
+    public void addNews(News newsItem) {
+        news.add(newsItem);
+        System.out.println("News added: " + newsItem.getTitle());
     }
 
-
-    public List<Request> viewPendingRequests() {
-        List<Request> pendingRequests = new ArrayList<>();
-        for (Request request : employeeRequests) {
-            if (request.isPendingApproval()) {
-                pendingRequests.add(request);
-            }
-        }
-        return pendingRequests;
+    public void removeNews(News newsItem) {
+        news.remove(newsItem);
     }
+
+    public List<News> getNews() {
+        return new ArrayList<>(news);
+    }
+
+    // ==================== REQUESTS ====================
 
     public void addEmployeeRequest(Request request) {
         employeeRequests.add(request);
         System.out.println("Request added: " + request.getDescription());
+    }
+
+    public List<Request> viewPendingRequests() {
+        List<Request> pending = new ArrayList<>();
+        for (Request r : employeeRequests) {
+            if (r.isPendingApproval()) pending.add(r);
+        }
+        return pending;
+    }
+
+    // ==================== GETTERS / SETTERS ====================
+
+    public ManagerType getManagerType() { return managerType; }
+    public void setManagerType(ManagerType managerType) {
+        this.managerType = managerType;
+    }
+
+    public List<Student> getStudents() { return new ArrayList<>(students); }
+    public List<Teacher> getTeachers() { return new ArrayList<>(teachers); }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", managerType=" + managerType;
     }
 }

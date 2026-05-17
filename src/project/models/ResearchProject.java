@@ -3,11 +3,14 @@ package project.models;
 import project.exceptions.NonResearchException;
 import project.interfaces.Researcher;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ResearchProject {
+public class ResearchProject implements Serializable {
+    private static final long serialVersionUID = 8L;
+
     private String topic;
     private List<ResearchPaper> publishedPapers;
     private List<Researcher> participants;
@@ -22,37 +25,19 @@ public class ResearchProject {
         this.topic = topic;
     }
 
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public List<ResearchPaper> getPublishedPapers() {
-        return new ArrayList<>(publishedPapers);
-    }
-
-    public void setPublishedPapers(List<ResearchPaper> publishedPapers) {
-        this.publishedPapers = new ArrayList<>(publishedPapers);
-    }
+    // ==================== МЕТОДТАР ====================
 
     public void publishPaper(ResearchPaper paper) {
         if (!publishedPapers.contains(paper)) {
             publishedPapers.add(paper);
+            System.out.println("Paper published: " + paper.getTitle());
         }
     }
 
-    public List<Researcher> getParticipants() {
-        return new ArrayList<>(participants);
-    }
-
-    public void addParticipant(Object participant) throws NonResearchException {
-        if (!(participant instanceof Researcher)) {
-            throw new NonResearchException("Only a Researcher can join a Research Project.");
+    public void addParticipant(Researcher researcher) throws NonResearchException {
+        if (researcher == null) {
+            throw new NonResearchException("Participant cannot be null.");
         }
-        Researcher researcher = (Researcher) participant;
         if (!participants.contains(researcher)) {
             participants.add(researcher);
             System.out.println("Researcher added: " + researcher);
@@ -60,12 +45,29 @@ public class ResearchProject {
     }
 
     public void removeParticipant(Researcher researcher) {
-        participants.remove(researcher);
+        if (participants.remove(researcher)) {
+            System.out.println("Researcher removed: " + researcher);
+        }
     }
 
     public boolean isParticipant(Researcher researcher) {
         return participants.contains(researcher);
     }
+
+    // ==================== GETTERS / SETTERS ====================
+
+    public String getTopic() { return topic; }
+    public void setTopic(String topic) { this.topic = topic; }
+
+    public List<ResearchPaper> getPublishedPapers() {
+        return new ArrayList<>(publishedPapers);
+    }
+
+    public List<Researcher> getParticipants() {
+        return new ArrayList<>(participants);
+    }
+
+    // ==================== EQUALS / HASHCODE ====================
 
     @Override
     public boolean equals(Object o) {
@@ -83,9 +85,9 @@ public class ResearchProject {
     @Override
     public String toString() {
         return "ResearchProject{" +
-                "topic='" + topic + '\'' +
-                ", publishedPapers=" + publishedPapers.size() +
+                "topic='" + topic + "'" +
+                ", papers=" + publishedPapers.size() +
                 ", participants=" + participants.size() +
-                '}';
+                "}";
     }
 }

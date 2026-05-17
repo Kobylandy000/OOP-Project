@@ -1,32 +1,57 @@
 package project.models;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Transcript {
-    private Map<Course, Double> courseGrades;
+public class Transcript implements Serializable {
+    private static final long serialVersionUID = 11L;
+
+    private Map<Course, Mark> courseMarks;
 
     public Transcript() {
-        this.courseGrades = new HashMap<>();
+        this.courseMarks = new HashMap<>();
     }
 
-    public void addGrade(Course course, double grade) {
-        courseGrades.put(course, grade);
+    // ==================== МЕТОДТАР ====================
+
+    public void addGrade(Course course, double gpa) {
+        // бұл бұрыннан бар, бірақ Mark сақталмайды
     }
 
-    public double getGrade(Course course) {
-        return courseGrades.getOrDefault(course, 0.0);
+    public void addMark(Course course, Mark mark) {
+        courseMarks.put(course, mark);
     }
 
-    public Map<Course, Double> getAllGrades() {
-        return new HashMap<>(courseGrades);
+    public Mark getMark(Course course) {
+        return courseMarks.get(course);
     }
 
     public double calculateGPA() {
-        if (courseGrades.isEmpty()) {
-            return 0.0;
+        if (courseMarks.isEmpty()) return 0.0;
+        double total = courseMarks.values().stream()
+                .mapToDouble(Mark::getGpa)
+                .sum();
+        return total / courseMarks.size();
+    }
+
+    public Map<Course, Mark> getAllMarks() {
+        return new HashMap<>(courseMarks);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== TRANSCRIPT ===\n");
+        for (Map.Entry<Course, Mark> entry : courseMarks.entrySet()) {
+            sb.append(entry.getKey().getName())
+                    .append(" — ")
+                    .append(entry.getValue().getLiteralMark())
+                    .append(" (GPA: ")
+                    .append(entry.getValue().getGpa())
+                    .append(")\n");
         }
-        double totalPoints = courseGrades.values().stream().mapToDouble(Double::doubleValue).sum();
-        return totalPoints / courseGrades.size();
+        sb.append("Overall GPA: ").append(String.format("%.2f", calculateGPA()));
+        return sb.toString();
     }
 }
