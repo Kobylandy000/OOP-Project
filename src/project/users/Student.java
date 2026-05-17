@@ -2,8 +2,10 @@ package project.users;
 
 import project.enums.Faculty;
 import project.enums.StudentDegree;
+import project.exceptions.CreditLimitExceededException;
 import project.exceptions.InvalidSupervisorException;
 import project.exceptions.NonResearchException;
+import project.exceptions.TooManyFailuresException;
 import project.interfaces.Researcher;
 import project.models.*;
 
@@ -58,7 +60,7 @@ public class Student extends User implements Comparable<Student>, Researcher {
 
     // ==================== STUDENT METHODS ====================
 
-    public void enrollCourse(Course course) {
+    public void enrollCourse(Course course) throws CreditLimitExceededException {
         if (courses.contains(course)) {
             System.out.println("You are already enrolled in this course.");
             return;
@@ -68,26 +70,19 @@ public class Student extends User implements Comparable<Student>, Researcher {
                 .mapToInt(Course::getCredits)
                 .sum();
         if (totalCredits + course.getCredits() > 21) {
-            System.out.println("Exceeds 21 credit limit!");
-            return;
+            throw new CreditLimitExceededException(
+                    "Cannot enroll: " + getFullName() +
+                            " would exceed 21 credit limit! Current: " + totalCredits +
+                            ", Requested: " + course.getCredits()
+            );
         }
         courses.add(course);
         course.registerStudent(this);
         System.out.println(getFullName() + " enrolled in " + course.getName());
     }
 
-    public void addMark(Course course, Mark mark) {
-        if (mark.getTotal() < 50) {
-            failCount++;
-            if (failCount > 3) {
-                System.out.println("Warning: " + getFullName() +
-                        " failed more than 3 times!");
-            }
-        }
-        marks.put(course, mark);
-        transcript.addMark(course, mark);
-        gpa = transcript.calculateGPA();
-    }
+    // Бұл әдіс ЖОЙЫЛДЫ - бағаны тек Teacher қояды!
+    // public void addMark(Course course, Mark mark) - Бұл енді ЖОҚ!
 
     public Map<Course, Mark> viewMarks() {
         return new HashMap<>(marks);
@@ -138,10 +133,10 @@ public class Student extends User implements Comparable<Student>, Researcher {
     }
 
     @Override
-    public double getHIndex() { 
-        return hIndex; 
+    public double getHIndex() {
+        return hIndex;
     }
-    
+
     public void setHIndex(double hIndex) {
         if (!isResearcher) {
             System.out.println(getFullName() + " is not a researcher!");
@@ -247,44 +242,57 @@ public class Student extends User implements Comparable<Student>, Researcher {
 
     // ==================== GETTERS / SETTERS ====================
 
-    public double getGpa() { 
-        return gpa; 
-    }
-    
-    public void setGpa(double gpa) { 
-        this.gpa = gpa; 
+    public double getGpa() {
+        return gpa;
     }
 
-    public Faculty getFaculty() { 
-        return faculty; 
-    }
-    
-    public void setFaculty(Faculty faculty) { 
-        this.faculty = faculty; 
+    public void setGpa(double gpa) {
+        this.gpa = gpa;
     }
 
-    public int getYear() { 
-        return year; 
-    }
-    
-    public void setYear(int year) { 
-        this.year = year; 
+    public Faculty getFaculty() {
+        return faculty;
     }
 
-    public StudentDegree getDegree() { 
-        return degree; 
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 
-    public boolean isResearcher() { 
-        return isResearcher; 
+    public int getYear() {
+        return year;
     }
 
-    public Researcher getSupervisor() { 
-        return supervisor; 
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public int getFailCount() { 
-        return failCount; 
+    public StudentDegree getDegree() {
+        return degree;
+    }
+
+    public boolean isResearcher() {
+        return isResearcher;
+    }
+
+    public Researcher getSupervisor() {
+        return supervisor;
+    }
+
+    public int getFailCount() {
+        return failCount;
+    }
+
+    public void setFailCount(int failCount) {
+        this.failCount = failCount;
+    }
+
+    // Teacher баға қою үшін керек getter'лар
+    public Map<Course, Mark> getMarks() {
+        return marks;
+    }
+
+    public Transcript getTranscript() {
+        return transcript;
     }
 
     @Override

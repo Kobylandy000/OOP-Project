@@ -3,6 +3,7 @@ package project.users;
 import project.enums.TeacherStatus;
 import project.enums.UrgencyLevel;
 import project.exceptions.NonResearchException;
+import project.exceptions.TooManyFailuresException;
 import project.interfaces.Researcher;
 import project.models.*;
 
@@ -67,8 +68,11 @@ public class Teacher extends Employee implements Researcher {
         }
     }
 
+    // ==================== ӨЗГЕРТІЛГЕН putMarks() ӘДІСІ ====================
     public void putMarks(Student student, Course course,
-                         double att1, double att2, double finalExam) {
+                         double att1, double att2, double finalExam)
+            throws TooManyFailuresException {
+
         if (!students.contains(student)) {
             System.out.println("Student not found: " + student.getFullName());
             return;
@@ -77,11 +81,31 @@ public class Teacher extends Employee implements Researcher {
             System.out.println("Course not found: " + course.getName());
             return;
         }
+
         Mark mark = new Mark(course, att1, att2, finalExam);
-        student.addMark(course, mark);
+
+        // FAIL COUNT ТЕКСЕРУ ЖӘНЕ Exception КИДАУ
+        if (mark.getTotal() < 50) {
+            int newFailCount = student.getFailCount() + 1;
+            student.setFailCount(newFailCount);
+
+            if (newFailCount > 3) {
+                throw new TooManyFailuresException(
+                        student.getFullName() + " has failed " + newFailCount +
+                                " times! Maximum 3 failures allowed."
+                );
+            }
+        }
+
+        // Бағаны студентке қою
+        student.getMarks().put(course, mark);
+        student.getTranscript().addMark(course, mark);
+        student.setGpa(student.getTranscript().calculateGPA());
+
         System.out.println("Mark assigned to " + student.getFullName() +
                 " for " + course.getName());
     }
+    // ==================== putMarks() ӘДІСІ АЯҚТАЛДЫ ====================
 
     public List<Student> viewStudents() {
         return new ArrayList<>(students);

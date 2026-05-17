@@ -95,7 +95,7 @@ public class Main {
         scanner.close();
     }
 
-    // ==================== MENUS ====================
+    // ==================== AUTHENTICATION ====================
 
     private static project.users.User authenticateUser(Admin admin, String email, String password) {
         if (admin.login(email, password)) {
@@ -110,6 +110,8 @@ public class Main {
 
         return null;
     }
+
+    // ==================== MENU DISPATCHER ====================
 
     private static void runMenu(project.users.User user, Course oop, Course math,
                                 Course ds, Teacher teacher1, Teacher teacher2,
@@ -153,9 +155,13 @@ public class Main {
                     System.out.println("3. " + ds);
                     System.out.print("Select a course: ");
                     String c = scanner.nextLine().trim();
-                    if (c.equals("1")) student.enrollCourse(oop);
-                    else if (c.equals("2")) student.enrollCourse(math);
-                    else if (c.equals("3")) student.enrollCourse(ds);
+                    try {
+                        if (c.equals("1")) student.enrollCourse(oop);
+                        else if (c.equals("2")) student.enrollCourse(math);
+                        else if (c.equals("3")) student.enrollCourse(ds);
+                    } catch (CreditLimitExceededException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
                     break;
 
                 case "2":
@@ -253,7 +259,15 @@ public class Main {
                         double att2 = Double.parseDouble(scanner.nextLine().trim());
                         System.out.print("Final exam (0-40): ");
                         double fin = Double.parseDouble(scanner.nextLine().trim());
-                        teacher.putMarks(target, oop, att1, att2, fin);
+
+                        // ===== TRY-CATCH for TooManyFailuresException =====
+                        try {
+                            teacher.putMarks(target, oop, att1, att2, fin);
+                        } catch (TooManyFailuresException e) {
+                            System.out.println("Error: " + e.getMessage());
+                        }
+                        // =================================================
+
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid number entered.");
                     }
