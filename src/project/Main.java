@@ -612,7 +612,7 @@ public class Main {
 
             ResearchAnalytics.findTopCitedResearcherOfYear(allSchools, 2024).ifPresent(topResearcher ->
                     System.out.println(
-                            "Top cited researcher of 2024 among all schools: " +
+                            "Top cited researcher of 2026 among all schools: " +
                                     ResearchAnalytics.researcherName(topResearcher) +
                                     " (" + ResearchAnalytics.citationsForYear(topResearcher, 2024) + " citations)"
                     )
