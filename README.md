@@ -59,6 +59,7 @@ src/
     processing/
     publisher/
     users/
+    storage/
 ```
 
 ### Key Packages
