@@ -70,15 +70,13 @@ public class Main {
             String password = scanner.nextLine().trim();
 
             // Барлық userлерден іздеу
-            for (project.users.User user : admin.getUsers()) {
-                if (user.login(email, password)) {
+            project.users.User authenticatedUser = authenticateUser(admin, email, password);
+            if (authenticatedUser != null) {
                     System.out.println("\nСәтті кірдіңіз! Қош келдіңіз, "
-                            + user.getFullName());
+                        + authenticatedUser.getFullName());
                     loggedIn = true;
-                    runMenu(user, oop, math, ds, teacher1, teacher2,
-                            student1, student2, manager);
-                    break;
-                }
+                runMenu(authenticatedUser, oop, math, ds, teacher1, teacher2,
+                        student1, student2, manager);
             }
 
             if (!loggedIn) {
@@ -96,6 +94,20 @@ public class Main {
     }
 
     // ==================== МЕНЮ ====================
+
+    private static project.users.User authenticateUser(Admin admin, String email, String password) {
+        if (admin.login(email, password)) {
+            return admin;
+        }
+
+        for (project.users.User user : admin.getUsers()) {
+            if (user.login(email, password)) {
+                return user;
+            }
+        }
+
+        return null;
+    }
 
     private static void runMenu(project.users.User user, Course oop, Course math,
                                 Course ds, Teacher teacher1, Teacher teacher2,
@@ -393,8 +405,7 @@ public class Main {
         System.out.println("\n--- RESEARCH DEMO ---");
 
         // Студентті researcher ет
-        student.setResearcher(true);
-        student.setHIndex(4.0);
+        student.activateResearchProfile(4.0);
 
         // Мақала жасау
         ResearchPaper paper1 = new ResearchPaper("AI in Education",
