@@ -37,7 +37,6 @@ public class Main {
         Admin admin = data.getAdmin();
         Admin.setInstance(admin);
 
-
         Course oop = data.findCourseByName("OOP");
         Course math = data.findCourseByName("Calculus");
         Course ds = data.findCourseByName("Data Structures");
@@ -88,6 +87,7 @@ public class Main {
         repository.save(data);
         scanner.close();
     }
+
     private static AppData createDefaultData() {
 
         // Courses
@@ -138,7 +138,6 @@ public class Main {
 
         return new AppData(admin, courses, researchPapers, researchProjects, news);
     }
-
 
     // ==================== AUTHENTICATION ====================
 
@@ -472,22 +471,22 @@ public class Main {
         // Make the student a researcher
         student.activateResearchProfile(4.0);
 
-        // Create research papers
+        // Create research papers (ALL DATES: January - May range, year 2026)
         ResearchPaper paper1 = new ResearchPaper("AI in Education",
-                "IEEE Journal", LocalDate.of(2023, 5, 10), 12);
-        paper1.setDoi("10.1109/AI.2023.001");
+                "IEEE Journal", LocalDate.of(2026, 2, 15), 12);  // February 15
+        paper1.setDoi("10.1109/AI.2026.001");
         paper1.setCitations(25);
 
         ResearchPaper paper2 = new ResearchPaper("Machine Learning Trends",
-                "Springer", LocalDate.of(2022, 8, 20), 8);
-        paper2.setDoi("10.1007/ML.2022.002");
+                "Springer", LocalDate.of(2026, 4, 10), 8);       // April 10
+        paper2.setDoi("10.1007/ML.2026.002");
         paper2.setCitations(10);
 
         student.addPaper(paper1);
         student.addPaper(paper2);
 
         // Project
-        ResearchProject project = new ResearchProject("AI Research 2024");
+        ResearchProject project = new ResearchProject("AI Research 2026");
         try {
             student.joinProject(project);
             System.out.println("The student joined the project.");
@@ -541,10 +540,10 @@ public class Main {
             ResearchPaper supervisorPaper = new ResearchPaper(
                     "Distributed Systems for Campus Research",
                     "ACM Digital Library",
-                    LocalDate.of(2024, 3, 12),
+                    LocalDate.of(2026, 1, 20),  // January 20
                     18
             );
-            supervisorPaper.setDoi("10.1145/DS.2024.010");
+            supervisorPaper.setDoi("10.1145/DS.2026.010");
             supervisorPaper.setCitations(40);
             supervisor.addPaper(supervisorPaper);
 
@@ -562,10 +561,10 @@ public class Main {
             ResearchPaper lecturerPaper = new ResearchPaper(
                     "Software Testing in Education",
                     "Elsevier",
-                    LocalDate.of(2024, 9, 5),
+                    LocalDate.of(2026, 3, 5),   // March 5
                     14
             );
-            lecturerPaper.setDoi("10.1016/STE.2024.021");
+            lecturerPaper.setDoi("10.1016/STE.2026.021");
             lecturerPaper.setCitations(60);
             lecturerResearcher.addPaper(lecturerPaper);
 
@@ -598,10 +597,10 @@ public class Main {
             ResearchPaper globalPaper = new ResearchPaper(
                     "Global AI Curriculum Review",
                     "ScienceDirect",
-                    LocalDate.of(2024, 11, 15),
+                    LocalDate.of(2026, 5, 1),   // May 1
                     22
             );
-            globalPaper.setDoi("10.1016/GAI.2024.099");
+            globalPaper.setDoi("10.1016/GAI.2026.099");
             globalPaper.setCitations(95);
             anotherSchoolProfessor.addPaper(globalPaper);
 
@@ -610,11 +609,11 @@ public class Main {
                     Arrays.asList(anotherSchoolProfessor)
             );
 
-            ResearchAnalytics.findTopCitedResearcherOfYear(allSchools, 2024).ifPresent(topResearcher ->
+            ResearchAnalytics.findTopCitedResearcherOfYear(allSchools, 2026).ifPresent(topResearcher ->
                     System.out.println(
                             "Top cited researcher of 2026 among all schools: " +
                                     ResearchAnalytics.researcherName(topResearcher) +
-                                    " (" + ResearchAnalytics.citationsForYear(topResearcher, 2024) + " citations)"
+                                    " (" + ResearchAnalytics.citationsForYear(topResearcher, 2026) + " citations)"
                     )
             );
         } catch (InvalidSupervisorException e) {
@@ -644,9 +643,9 @@ public class Main {
         }
 
         ResearchPaper paper = new ResearchPaper("Deep Learning Survey",
-                "Nature", LocalDate.of(2024, 1, 15), 20);
+                "Nature", LocalDate.of(2026, 2, 28), 20);  // February 28
         paper.setCitations(100);
-        paper.setDoi("10.1038/DL.2024.001");
+        paper.setDoi("10.1038/DL.2026.001");
 
         News news = new News("New Paper!", "Professor published a paper.", "Research");
         teacher.addPaper(paper);
