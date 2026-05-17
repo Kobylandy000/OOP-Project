@@ -2,14 +2,16 @@ package project;
 
 import project.enums.*;
 import project.exceptions.*;
-import project.factory.UserFactory;
 import project.interfaces.Researcher;
 import project.models.*;
 import project.publisher.ResearchPaperPublisher;
+import project.services.ResearchAnalytics;
 import project.users.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -453,6 +455,112 @@ public class Main {
 
         System.out.println("\n-- Sorted by page count --");
         student.printPapers(Comparator.comparingInt(ResearchPaper::getPages).reversed());
+
+        // Employee researcher and supervisor requirement
+        try {
+            Supervisor supervisor = new Supervisor(
+                    "Dr. Omar Research",
+                    "omar.research@uni.kz",
+                    "super123",
+                    401,
+                    "Research Supervisor",
+                    6.7
+            );
+
+            Student seniorStudent = new Student(
+                    "Amina Research",
+                    "amina@uni.kz",
+                    "amin123",
+                    555,
+                    3.9,
+                    Faculty.IT,
+                    4
+            );
+            seniorStudent.activateResearchProfile(3.8);
+            seniorStudent.assignSupervisor(supervisor);
+
+            ResearchPaper supervisorPaper = new ResearchPaper(
+                    "Distributed Systems for Campus Research",
+                    "ACM Digital Library",
+                    LocalDate.of(2024, 3, 12),
+                    18
+            );
+            supervisorPaper.setDoi("10.1145/DS.2024.010");
+            supervisorPaper.setCitations(40);
+            supervisor.addPaper(supervisorPaper);
+
+            Teacher lecturerResearcher = new Teacher(
+                    "Madina Ibrayeva",
+                    "madina@uni.kz",
+                    "lect123",
+                    777,
+                    "Senior Lecturer",
+                    TeacherStatus.SENIOR_LECTOR,
+                    7
+            );
+            lecturerResearcher.activateResearchProfile(4.5);
+
+            ResearchPaper lecturerPaper = new ResearchPaper(
+                    "Software Testing in Education",
+                    "Elsevier",
+                    LocalDate.of(2024, 9, 5),
+                    14
+            );
+            lecturerPaper.setDoi("10.1016/STE.2024.021");
+            lecturerPaper.setCitations(60);
+            lecturerResearcher.addPaper(lecturerPaper);
+
+            List<Researcher> schoolResearchers = Arrays.asList(student, lecturerResearcher, supervisor);
+
+            System.out.println("\n-- All university researchers' papers sorted by citations --");
+            ResearchAnalytics.printUniversityPapers(
+                    schoolResearchers,
+                    Comparator.comparingInt(ResearchPaper::getCitationsCount).reversed()
+            );
+
+            ResearchAnalytics.findTopCitedResearcher(schoolResearchers).ifPresent(topResearcher ->
+                    System.out.println(
+                            "\nTop cited researcher of the school: " +
+                                    ResearchAnalytics.researcherName(topResearcher) +
+                                    " (" + ResearchAnalytics.totalCitations(topResearcher) + " citations)"
+                    )
+            );
+
+            Teacher anotherSchoolProfessor = new Teacher(
+                    "Professor Helen Grant",
+                    "helen@other.edu",
+                    "prof123",
+                    888,
+                    "Professor",
+                    TeacherStatus.PROFESSOR,
+                    12
+            );
+
+            ResearchPaper globalPaper = new ResearchPaper(
+                    "Global AI Curriculum Review",
+                    "ScienceDirect",
+                    LocalDate.of(2024, 11, 15),
+                    22
+            );
+            globalPaper.setDoi("10.1016/GAI.2024.099");
+            globalPaper.setCitations(95);
+            anotherSchoolProfessor.addPaper(globalPaper);
+
+            List<List<Researcher>> allSchools = Arrays.asList(
+                    schoolResearchers,
+                    Arrays.asList(anotherSchoolProfessor)
+            );
+
+            ResearchAnalytics.findTopCitedResearcherOfYear(allSchools, 2024).ifPresent(topResearcher ->
+                    System.out.println(
+                            "Top cited researcher of 2024 among all schools: " +
+                                    ResearchAnalytics.researcherName(topResearcher) +
+                                    " (" + ResearchAnalytics.citationsForYear(topResearcher, 2024) + " citations)"
+                    )
+            );
+        } catch (InvalidSupervisorException e) {
+            System.out.println("Supervisor error: " + e.getMessage());
+        }
 
         // Publisher (Observer pattern)
         System.out.println("\n-- Observer: ResearchPaperPublisher --");
