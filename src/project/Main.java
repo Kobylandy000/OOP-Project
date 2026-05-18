@@ -17,7 +17,6 @@ import java.util.Scanner;
 import project.storage.AppData;
 import project.storage.DataRepository;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
@@ -61,7 +60,6 @@ public class Main {
             System.out.print("Password: ");
             String password = scanner.nextLine().trim();
 
-            // Search among all available users
             project.users.User authenticatedUser = authenticateUser(admin, email, password);
             if (authenticatedUser != null) {
                 System.out.println("\nLogin successful! Welcome, "
@@ -245,7 +243,6 @@ public class Main {
 
     private static void teacherMenu(Teacher teacher, Course oop,
                                     Student student1, Student student2) {
-        // Курс пен студенттерді мұғалімге алдын ала тағайындау
         teacher.manageCourse(oop);
         teacher.addStudent(student1);
         teacher.addStudent(student2);
@@ -290,7 +287,6 @@ public class Main {
                         System.out.print("Final exam (0-40): ");
                         double fin = Double.parseDouble(scanner.nextLine().trim());
 
-                        // ===== TRY-CATCH for TooManyFailuresException =====
                         try {
                             teacher.putMarks(target, oop, att1, att2, fin);
                         } catch (TooManyFailuresException e) {
@@ -450,12 +446,12 @@ public class Main {
         student.activateResearchProfile(4.0);
 
         ResearchPaper paper1 = new ResearchPaper("AI in Education",
-                "IEEE Journal", LocalDate.of(2026, 2, 15), 12);  // February 15
+                "IEEE Journal", LocalDate.of(2026, 2, 15), 12);
         paper1.setDoi("10.1109/AI.2026.001");
         paper1.setCitations(25);
 
         ResearchPaper paper2 = new ResearchPaper("Machine Learning Trends",
-                "Springer", LocalDate.of(2026, 4, 10), 8);       // April 10
+                "Springer", LocalDate.of(2026, 4, 10), 8);
         paper2.setDoi("10.1007/ML.2026.002");
         paper2.setCitations(10);
 
@@ -513,7 +509,7 @@ public class Main {
             ResearchPaper supervisorPaper = new ResearchPaper(
                     "Distributed Systems for Campus Research",
                     "ACM Digital Library",
-                    LocalDate.of(2026, 1, 20),  // January 20
+                    LocalDate.of(2026, 1, 20),
                     18
             );
             supervisorPaper.setDoi("10.1145/DS.2026.010");
@@ -534,7 +530,7 @@ public class Main {
             ResearchPaper lecturerPaper = new ResearchPaper(
                     "Software Testing in Education",
                     "Elsevier",
-                    LocalDate.of(2026, 3, 5),   // March 5
+                    LocalDate.of(2026, 3, 5),
                     14
             );
             lecturerPaper.setDoi("10.1016/STE.2026.021");
@@ -570,7 +566,7 @@ public class Main {
             ResearchPaper globalPaper = new ResearchPaper(
                     "Global AI Curriculum Review",
                     "ScienceDirect",
-                    LocalDate.of(2026, 5, 1),   // May 1
+                    LocalDate.of(2026, 5, 1),
                     22
             );
             globalPaper.setDoi("10.1016/GAI.2026.099");
@@ -593,7 +589,6 @@ public class Main {
             System.out.println("Supervisor error: " + e.getMessage());
         }
 
-        // Publisher (Observer pattern)
         System.out.println("\n-- Observer: ResearchPaperPublisher --");
         ResearchPaperPublisher publisher = new ResearchPaperPublisher();
         publisher.subscribe(student);
@@ -603,7 +598,6 @@ public class Main {
     private static void researchDemoTeacher(Teacher teacher) {
         System.out.println("\n--- TEACHER RESEARCH DEMO ---");
 
-        // Professors are researchers automatically; other teachers can activate a research profile
         System.out.println("isProfessor: " + teacher.isProfessor());
         System.out.println("isResearcher: " + teacher.isResearcher());
         if (!teacher.isResearcher()) {
@@ -614,7 +608,7 @@ public class Main {
         }
 
         ResearchPaper paper = new ResearchPaper("Deep Learning Survey",
-                "Nature", LocalDate.of(2026, 2, 28), 20);  // February 28
+                "Nature", LocalDate.of(2026, 2, 28), 20);
         paper.setCitations(100);
         paper.setDoi("10.1038/DL.2026.001");
 
