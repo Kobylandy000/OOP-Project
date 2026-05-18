@@ -38,8 +38,6 @@ public class ResearchPaper implements Serializable, Comparable<ResearchPaper> {
         this.citations = 0;
     }
 
-    // ==================== МЕТОДТАР ====================
-
     public void addAuthor(Researcher author) {
         if (!authors.contains(author)) authors.add(author);
     }
@@ -78,14 +76,10 @@ public class ResearchPaper implements Serializable, Comparable<ResearchPaper> {
         }
     }
 
-    // ==================== COMPARABLE ====================
-
     @Override
     public int compareTo(ResearchPaper other) {
         return Integer.compare(other.citations, this.citations); // citations бойынша кемуі
     }
-
-    // ==================== EQUALS / HASHCODE ====================
 
     @Override
     public boolean equals(Object o) {
@@ -100,8 +94,6 @@ public class ResearchPaper implements Serializable, Comparable<ResearchPaper> {
     public int hashCode() {
         return Objects.hash(doi, title);
     }
-
-    // ==================== GETTERS / SETTERS ====================
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

@@ -24,7 +24,6 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-// ==================== LOAD OR CREATE DATA ====================
         DataRepository repository = DataRepository.getInstance();
 
         AppData data = repository.load();
@@ -48,8 +47,6 @@ public class Main {
         Student student2 = (Student) data.findUserByEmail("dana@uni.kz");
 
         Manager manager = (Manager) data.findUserByEmail("gulnara@uni.kz");
-
-        // ==================== AUTHENTICATION ====================
 
         System.out.println("\n========================================");
         System.out.println("       UNIVERSITY SYSTEM LOGIN");
@@ -89,8 +86,6 @@ public class Main {
     }
 
     private static AppData createDefaultData() {
-
-        // Courses
         Course oop = new Course("OOP", LessonType.LECTURE, Language.EN,
                 CourseType.MAJOR, Faculty.IT, 5);
 
@@ -100,25 +95,23 @@ public class Main {
         Course ds = new Course("Data Structures", LessonType.LECTURE, Language.EN,
                 CourseType.MAJOR, Faculty.IT, 5);
 
-        // Teachers
+
         Teacher teacher1 = new Teacher("Aibek Seitkali", "aibek@uni.kz",
                 "teach123", 101, "Professor", TeacherStatus.PROFESSOR, 10);
 
         Teacher teacher2 = new Teacher("Zarina Bekova", "zarina@uni.kz",
                 "teach456", 102, "Senior Lecturer", TeacherStatus.SENIOR_LECTOR, 5);
 
-        // Students
+
         Student student1 = new Student("Arman Nurlanov", "arman@uni.kz",
                 "stud123", 201, 3.5, Faculty.IT, 2);
 
         Student student2 = new Student("Dana Seitkali", "dana@uni.kz",
                 "stud456", 202, 3.8, Faculty.IT, 4);
 
-        // Manager
         Manager manager = new Manager("Gulnara Abdova", "gulnara@uni.kz",
                 "man123", 301, "OR Manager", ManagerType.OFFICEREGISTRATION);
 
-        // Admin
         Admin admin = Admin.getInstance();
 
         admin.addUser(teacher1);
@@ -139,8 +132,6 @@ public class Main {
         return new AppData(admin, courses, researchPapers, researchProjects, news);
     }
 
-    // ==================== AUTHENTICATION ====================
-
     private static project.users.User authenticateUser(Admin admin, String email, String password) {
         if (admin.login(email, password)) {
             return admin;
@@ -154,8 +145,6 @@ public class Main {
 
         return null;
     }
-
-    // ==================== MENU DISPATCHER ====================
 
     private static void runMenu(project.users.User user, Course oop, Course math,
                                 Course ds, Teacher teacher1, Teacher teacher2,
@@ -172,8 +161,6 @@ public class Main {
             adminMenu((Admin) user);
         }
     }
-
-    // ==================== STUDENT MENU ====================
 
     private static void studentMenu(Student student, Course oop,
                                     Course math, Course ds, Teacher teacher) {
@@ -255,11 +242,10 @@ public class Main {
         }
     }
 
-    // ==================== TEACHER MENU ====================
 
     private static void teacherMenu(Teacher teacher, Course oop,
                                     Student student1, Student student2) {
-        // Assign the course and students to the teacher in advance
+        // Курс пен студенттерді мұғалімге алдын ала тағайындау
         teacher.manageCourse(oop);
         teacher.addStudent(student1);
         teacher.addStudent(student2);
@@ -310,7 +296,6 @@ public class Main {
                         } catch (TooManyFailuresException e) {
                             System.out.println("Error: " + e.getMessage());
                         }
-                        // =================================================
 
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid number entered.");
@@ -335,8 +320,6 @@ public class Main {
             }
         }
     }
-
-    // ==================== MANAGER MENU ====================
 
     private static void managerMenu(Manager manager, Course oop, Course math,
                                     Course ds, Teacher teacher1, Teacher teacher2,
@@ -406,8 +389,6 @@ public class Main {
         }
     }
 
-    // ==================== ADMIN MENU ====================
-
     private static void adminMenu(Admin admin) {
         boolean running = true;
         while (running) {
@@ -463,15 +444,11 @@ public class Main {
         }
     }
 
-    // ==================== RESEARCH DEMO (STUDENT) ====================
-
     private static void researchDemoStudent(Student student) {
         System.out.println("\n--- RESEARCH DEMO ---");
 
-        // Make the student a researcher
         student.activateResearchProfile(4.0);
 
-        // Create research papers (ALL DATES: January - May range, year 2026)
         ResearchPaper paper1 = new ResearchPaper("AI in Education",
                 "IEEE Journal", LocalDate.of(2026, 2, 15), 12);  // February 15
         paper1.setDoi("10.1109/AI.2026.001");
@@ -485,7 +462,6 @@ public class Main {
         student.addPaper(paper1);
         student.addPaper(paper2);
 
-        // Project
         ResearchProject project = new ResearchProject("AI Research 2026");
         try {
             student.joinProject(project);
@@ -494,7 +470,6 @@ public class Main {
             System.out.println("Error: " + e.getMessage());
         }
 
-        // Student without researcher status
         Student nonResearcher = new Student("Test Student", "test@uni.kz",
                 "test", 999, 3.0, Faculty.IT, 1);
         System.out.println("\n-- A non-research student tries to join the project --");
@@ -504,7 +479,6 @@ public class Main {
             System.out.println("Exception thrown: " + e.getMessage());
         }
 
-        // Sort papers
         System.out.println("\n-- Sorted by citations --");
         student.printPapers(Comparator.comparingInt(ResearchPaper::getCitationsCount).reversed());
 
@@ -514,7 +488,6 @@ public class Main {
         System.out.println("\n-- Sorted by page count --");
         student.printPapers(Comparator.comparingInt(ResearchPaper::getPages).reversed());
 
-        // Employee researcher and supervisor requirement
         try {
             Supervisor supervisor = new Supervisor(
                     "Dr. Omar Research",
@@ -626,8 +599,6 @@ public class Main {
         publisher.subscribe(student);
         publisher.publishPaper(paper1);
     }
-
-    // ==================== RESEARCH DEMO (TEACHER) ====================
 
     private static void researchDemoTeacher(Teacher teacher) {
         System.out.println("\n--- TEACHER RESEARCH DEMO ---");
