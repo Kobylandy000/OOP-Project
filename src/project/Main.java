@@ -38,6 +38,8 @@ public class Main {
         Course oop = data.findCourseByName("OOP");
         Course math = data.findCourseByName("Calculus");
         Course ds = data.findCourseByName("Data Structures");
+        Course algorithms = data.findCourseByName("Algorithms");
+        Course web = data.findCourseByName("Web Development");
 
         Teacher teacher1 = (Teacher) data.findUserByEmail("aibek@uni.kz");
         Teacher teacher2 = (Teacher) data.findUserByEmail("zarina@uni.kz");
@@ -65,8 +67,8 @@ public class Main {
                 System.out.println("\nLogin successful! Welcome, "
                         + authenticatedUser.getFullName());
                 loggedIn = true;
-                runMenu(authenticatedUser, oop, math, ds, teacher1, teacher2,
-                        student1, student2, manager);
+                runMenu(authenticatedUser, oop, math, ds, algorithms, web,
+                        teacher1, teacher2, student1, student2, manager);
             }
 
             if (!loggedIn) {
@@ -93,13 +95,18 @@ public class Main {
         Course ds = new Course("Data Structures", LessonType.LECTURE, Language.EN,
                 CourseType.MAJOR, Faculty.IT, 5);
 
+        // ЖАҢА ҚОСЫЛҒАН КУРСТАР
+        Course algorithms = new Course("Algorithms", LessonType.LECTURE, Language.EN,
+                CourseType.MAJOR, Faculty.IT, 6);
+
+        Course web = new Course("Web Development", LessonType.LECTURE, Language.EN,
+                CourseType.ELECTIVE, Faculty.IT, 5);
 
         Teacher teacher1 = new Teacher("Aibek Seitkali", "aibek@uni.kz",
                 "teach123", 101, "Professor", TeacherStatus.PROFESSOR, 10);
 
         Teacher teacher2 = new Teacher("Zarina Bekova", "zarina@uni.kz",
                 "teach456", 102, "Senior Lecturer", TeacherStatus.SENIOR_LECTOR, 5);
-
 
         Student student1 = new Student("Arman Nurlanov", "arman@uni.kz",
                 "stud123", 201, 3.5, Faculty.IT, 2);
@@ -122,6 +129,8 @@ public class Main {
         courses.add(oop);
         courses.add(math);
         courses.add(ds);
+        courses.add(algorithms);
+        courses.add(web);
 
         List<ResearchPaper> researchPapers = new ArrayList<>();
         List<ResearchProject> researchProjects = new ArrayList<>();
@@ -144,12 +153,12 @@ public class Main {
         return null;
     }
 
-    private static void runMenu(project.users.User user, Course oop, Course math,
-                                Course ds, Teacher teacher1, Teacher teacher2,
+    private static void runMenu(project.users.User user, Course oop, Course math, Course ds,
+                                Course algorithms, Course web, Teacher teacher1, Teacher teacher2,
                                 Student student1, Student student2, Manager manager) {
 
         if (user instanceof Student) {
-            studentMenu((Student) user, oop, math, ds, teacher1);
+            studentMenu((Student) user, oop, math, ds, algorithms, web, teacher1);
         } else if (user instanceof Teacher) {
             teacherMenu((Teacher) user, oop, student1, student2);
         } else if (user instanceof Manager) {
@@ -160,8 +169,8 @@ public class Main {
         }
     }
 
-    private static void studentMenu(Student student, Course oop,
-                                    Course math, Course ds, Teacher teacher) {
+    private static void studentMenu(Student student, Course oop, Course math, Course ds,
+                                    Course algorithms, Course web, Teacher teacher) {
         boolean running = true;
         while (running) {
             System.out.println("\n--- STUDENT MENU: " + student.getFullName() + " ---");
@@ -179,15 +188,19 @@ public class Main {
             switch (choice) {
                 case "1":
                     System.out.println("\n-- Available courses --");
-                    System.out.println("1. " + oop);
-                    System.out.println("2. " + math);
-                    System.out.println("3. " + ds);
+                    System.out.println("1. " + oop + " (5 credits)");
+                    System.out.println("2. " + math + " (4 credits)");
+                    System.out.println("3. " + ds + " (5 credits)");
+                    System.out.println("4. " + algorithms + " (6 credits)");
+                    System.out.println("5. " + web + " (5 credits)");
                     System.out.print("Select a course: ");
                     String c = scanner.nextLine().trim();
                     try {
                         if (c.equals("1")) student.enrollCourse(oop);
                         else if (c.equals("2")) student.enrollCourse(math);
                         else if (c.equals("3")) student.enrollCourse(ds);
+                        else if (c.equals("4")) student.enrollCourse(algorithms);
+                        else if (c.equals("5")) student.enrollCourse(web);
                     } catch (CreditLimitExceededException e) {
                         System.out.println("Error: " + e.getMessage());
                     }
@@ -239,7 +252,6 @@ public class Main {
             }
         }
     }
-
 
     private static void teacherMenu(Teacher teacher, Course oop,
                                     Student student1, Student student2) {
