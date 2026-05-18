@@ -36,7 +36,7 @@ public abstract class Employee extends User {
     }
 
 
-    public void sendMessage(Employee recipient, String content) {
+    public void sendMessage(Employee recipient, String content) { // recipient - получатель
         if (recipient == null || content == null || content.trim().isEmpty()) {
             System.out.println("Error: Invalid recipient or message content.");
             return;

@@ -41,8 +41,6 @@ public class Course implements Serializable {
         this.students = new ArrayList<>();
     }
 
-    // ==================== МЕТОДТАР ====================
-
     public void addInstructor(Teacher teacher) {
         if (teacher != null && !instructors.contains(teacher)) {
             instructors.add(teacher);
@@ -68,8 +66,6 @@ public class Course implements Serializable {
                 this.faculty != studentFaculty;
     }
 
-    // ==================== EQUALS / HASHCODE ====================
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -84,32 +80,61 @@ public class Course implements Serializable {
         return Objects.hash(name, faculty);
     }
 
-    // ==================== GETTERS / SETTERS ====================
+    public String getName() {
+        return name;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public LessonType getLessonType() { return lessonType; }
+    public LessonType getLessonType() {
+        return lessonType;
+    }
+
     public void setLessonType(LessonType lessonType) {
         this.lessonType = lessonType;
     }
 
-    public Language getLanguage() { return language; }
-    public void setLanguage(Language language) { this.language = language; }
+    public Language getLanguage() {
+        return language;
+    }
 
-    public CourseType getCourseType() { return courseType; }
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    public CourseType getCourseType() {
+        return courseType;
+    }
+
     public void setCourseType(CourseType courseType) {
         this.courseType = courseType;
     }
 
-    public Faculty getFaculty() { return faculty; }
-    public void setFaculty(Faculty faculty) { this.faculty = faculty; }
+    public Faculty getFaculty() {
+        return faculty;
+    }
 
-    public int getCredits() { return credits; }
-    public void setCredits(int credits) { this.credits = credits; }
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
 
-    public List<Teacher> getInstructors() { return new ArrayList<>(instructors); }
-    public List<Student> getStudents() { return new ArrayList<>(students); }
+    public int getCredits() {
+        return credits;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public List<Teacher> getInstructors() {
+        return new ArrayList<>(instructors);
+    }
+
+    public List<Student> getStudents() {
+        return new ArrayList<>(students);
+    }
 
     @Override
     public String toString() {

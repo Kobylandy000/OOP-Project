@@ -5,7 +5,6 @@ import project.enums.StudentDegree;
 import project.exceptions.CreditLimitExceededException;
 import project.exceptions.InvalidSupervisorException;
 import project.exceptions.NonResearchException;
-import project.exceptions.TooManyFailuresException;
 import project.interfaces.Researcher;
 import project.models.*;
 
@@ -31,7 +30,7 @@ public class Student extends User implements Comparable<Student>, Researcher {
     private double hIndex;
     private List<UniversityJournal> subscriptions;
 
-    private Researcher supervisor;
+    private Researcher supervisor; // ғылыми жетекші 4 курс студенті үшін
 
     public Student() {
         super();
@@ -58,8 +57,6 @@ public class Student extends User implements Comparable<Student>, Researcher {
         this.failCount = 0;
     }
 
-    // ==================== STUDENT METHODS ====================
-
     public void enrollCourse(Course course) throws CreditLimitExceededException {
         if (courses.contains(course)) {
             System.out.println("You are already enrolled in this course.");
@@ -80,9 +77,6 @@ public class Student extends User implements Comparable<Student>, Researcher {
         course.registerStudent(this);
         System.out.println(getFullName() + " enrolled in " + course.getName());
     }
-
-    // Бұл әдіс ЖОЙЫЛДЫ - бағаны тек Teacher қояды!
-    // public void addMark(Course course, Mark mark) - Бұл енді ЖОҚ!
 
     public Map<Course, Mark> viewMarks() {
         return new HashMap<>(marks);
@@ -107,7 +101,7 @@ public class Student extends User implements Comparable<Student>, Researcher {
     }
 
     public void assignSupervisor(Researcher supervisor)
-            throws InvalidSupervisorException {
+            throws InvalidSupervisorException { // 4 курс студентіне ғылыми жетекші тағайындау
         if (year != 4) {
             System.out.println("Only 4th year students can have a supervisor.");
             return;
@@ -119,8 +113,6 @@ public class Student extends User implements Comparable<Student>, Researcher {
         this.supervisor = supervisor;
         System.out.println(getFullName() + " assigned supervisor: " + supervisor);
     }
-
-    // ==================== RESEARCHER METHODS ====================
 
     @Override
     public List<ResearchProject> getProjects() {
@@ -209,7 +201,7 @@ public class Student extends User implements Comparable<Student>, Researcher {
             papers.add(paper);
         }
         if (news != null) {
-            news.announcePaper(paper);
+            news.announcePaper(paper); // мақаланы хабарлау
         } else {
             System.out.println("Paper \"" + paper.getTitle() + "\" published, but no news announcement was created.");
         }
@@ -233,14 +225,10 @@ public class Student extends User implements Comparable<Student>, Researcher {
         return new ArrayList<>(subscriptions);
     }
 
-    // ==================== COMPARABLE ====================
-
     @Override
     public int compareTo(Student other) {
         return Double.compare(other.gpa, this.gpa); // Descending by GPA
     }
-
-    // ==================== GETTERS / SETTERS ====================
 
     public double getGpa() {
         return gpa;

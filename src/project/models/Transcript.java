@@ -13,19 +13,14 @@ public class Transcript implements Serializable {
         this.courseMarks = new HashMap<>();
     }
 
-    // ==================== METHODS ====================
-
-
     public void addMark(Course course, Mark mark) {
         courseMarks.put(course, mark);
     }
 
-    
     public Mark getMark(Course course) {
         return courseMarks.get(course);
     }
 
-    
     public double calculateGPA() {
         if (courseMarks.isEmpty()) {
             return 0.0;

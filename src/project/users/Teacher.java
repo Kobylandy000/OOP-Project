@@ -68,7 +68,6 @@ public class Teacher extends Employee implements Researcher {
         }
     }
 
-    // ==================== ӨЗГЕРТІЛГЕН putMarks() ӘДІСІ ====================
     public void putMarks(Student student, Course course,
                          double att1, double att2, double finalExam)
             throws TooManyFailuresException {
@@ -84,7 +83,6 @@ public class Teacher extends Employee implements Researcher {
 
         Mark mark = new Mark(course, att1, att2, finalExam);
 
-        // FAIL COUNT ТЕКСЕРУ ЖӘНЕ Exception КИДАУ
         if (mark.getTotal() < 50) {
             int newFailCount = student.getFailCount() + 1;
             student.setFailCount(newFailCount);
@@ -97,7 +95,6 @@ public class Teacher extends Employee implements Researcher {
             }
         }
 
-        // Бағаны студентке қою
         student.getMarks().put(course, mark);
         student.getTranscript().addMark(course, mark);
         student.setGpa(student.getTranscript().calculateGPA());
@@ -105,14 +102,13 @@ public class Teacher extends Employee implements Researcher {
         System.out.println("Mark assigned to " + student.getFullName() +
                 " for " + course.getName());
     }
-    // ==================== putMarks() ӘДІСІ АЯҚТАЛДЫ ====================
 
     public List<Student> viewStudents() {
         return new ArrayList<>(students);
     }
 
-    public void sendComplaint(String complaint, Student student,
-                              UrgencyLevel level) {
+    public void sendComplaint(String complaint, Student student, UrgencyLevel level) {
+        // sendComplaint - шағым жіберу
         if (!students.contains(student)) {
             System.out.println("Student not found.");
             return;
@@ -214,7 +210,7 @@ public class Teacher extends Employee implements Researcher {
         }
         if (!projects.contains(project)) {
             projects.add(project);
-            project.addParticipant(this);
+            project.addParticipant(this); // Participant - қатысушы
         }
     }
 

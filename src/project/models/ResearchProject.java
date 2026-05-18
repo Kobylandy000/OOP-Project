@@ -25,8 +25,6 @@ public class ResearchProject implements Serializable {
         this.topic = topic;
     }
 
-    // ==================== МЕТОДТАР ====================
-
     public void publishPaper(ResearchPaper paper) {
         if (!publishedPapers.contains(paper)) {
             publishedPapers.add(paper);
@@ -54,8 +52,6 @@ public class ResearchProject implements Serializable {
         return participants.contains(researcher);
     }
 
-    // ==================== GETTERS / SETTERS ====================
-
     public String getTopic() { return topic; }
     public void setTopic(String topic) { this.topic = topic; }
 
@@ -66,8 +62,6 @@ public class ResearchProject implements Serializable {
     public List<Researcher> getParticipants() {
         return new ArrayList<>(participants);
     }
-
-    // ==================== EQUALS / HASHCODE ====================
 
     @Override
     public boolean equals(Object o) {

@@ -1,11 +1,8 @@
 package project.models;
 
-import project.interfaces.Researcher;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,10 +22,10 @@ public class News implements Serializable {
     }
 
     public News(String title, String content, String topic) {
-        this.title = title;
-        this.content = content;
-        this.topic = topic;
-        this.pinned = "Research".equalsIgnoreCase(topic);
+        this.title = title; // атауы
+        this.content = content; // мазмұны
+        this.topic = topic; // жаңалық категориясы ("Research", "General", "Event", "Sport")
+        this.pinned = "Research".equalsIgnoreCase(topic); // маңыздылығы Researhcer болса ол маңызды болып табылады
         this.createdAt = LocalDateTime.now();
         this.comments = new ArrayList<>();
     }
@@ -37,7 +34,7 @@ public class News implements Serializable {
         comments.add(comment);
     }
 
-    public void announcePaper(ResearchPaper paper) {
+    public void announcePaper(ResearchPaper paper) { // announce paper - мақаланы хабарлау
         System.out.println("=== NEW PAPER ANNOUNCED ===");
         System.out.println("Title  : " + paper.getTitle());
         System.out.println("Journal: " + paper.getJournal());
@@ -45,7 +42,7 @@ public class News implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         News news = (News) o;

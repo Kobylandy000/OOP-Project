@@ -34,8 +34,8 @@ public class Manager extends Employee {
         this.employeeRequests = new ArrayList<>();
     }
 
-    // ==================== STUDENT БАСҚАРУ ====================
-
+    // Студентті басқару методтары
+    // Бекітілген студенттер ғана курсқа жазыла алады
     public void approveStudent(Student student) {
         if (!students.contains(student)) {
             students.add(student);
@@ -51,30 +51,28 @@ public class Manager extends Employee {
         }
     }
 
-    // ==================== TEACHER БАСҚАРУ ====================
-
+    // Мұғалімдерді басқару методтары
     public void addTeacher(Teacher teacher) {
         if (!teachers.contains(teacher)) {
             teachers.add(teacher);
         }
     }
 
+    // мұғалімге курс тағайындау
     public void assignCourseToTeacher(Course course, Teacher teacher) {
         teacher.manageCourse(course);
         System.out.println("Course " + course.getName() +
                 " assigned to " + teacher.getFullName());
     }
 
-    // ==================== COURSE БАСҚАРУ ====================
-
+    // курстарды басқаратын методтар
     public void addCourse(Course course, Major major, int year) {
         major.addCourseForYear(course, year);
         System.out.println("Course " + course.getName() +
                 " added for year " + year);
     }
 
-    // ==================== REPORT ====================
-
+    // REPORT
     public Report generateReport() {
         Report report = new Report();
 
@@ -106,7 +104,6 @@ public class Manager extends Employee {
         return report;
     }
 
-    // ==================== VIEW INFO ====================
 
     public List<Student> viewStudents(SortingCriteria criteria) {
         List<Student> sorted = new ArrayList<>(students);
@@ -135,7 +132,6 @@ public class Manager extends Employee {
         return sorted;
     }
 
-    // ==================== NEWS ====================
 
     public void addNews(News newsItem) {
         news.add(newsItem);
@@ -150,8 +146,7 @@ public class Manager extends Employee {
         return new ArrayList<>(news);
     }
 
-    // ==================== REQUESTS ====================
-
+    // REQUESTS
     public void addEmployeeRequest(Request request) {
         employeeRequests.add(request);
         System.out.println("Request added: " + request.getDescription());
@@ -164,8 +159,6 @@ public class Manager extends Employee {
         }
         return pending;
     }
-
-    // ==================== GETTERS / SETTERS ====================
 
     public ManagerType getManagerType() { return managerType; }
     public void setManagerType(ManagerType managerType) {

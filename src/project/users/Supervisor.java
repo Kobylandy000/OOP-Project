@@ -105,7 +105,7 @@ public class Supervisor extends Employee implements Researcher {
         if (!papers.contains(paper)) {
             papers.add(paper);
         }
-        news.announcePaper(paper);
+        news.announcePaper(paper); // хабарлау
     }
 
     @Override

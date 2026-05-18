@@ -8,7 +8,7 @@ public class Admin extends Employee {
 
     private static volatile Admin instance;
 
-    private List<String> logFiles;
+    private List<String> logFiles; // әр юзердің қосылып, өшірілгені, өзгергені туралы ақпарат
     private List<User> users;
 
     private Admin() {
@@ -17,16 +17,15 @@ public class Admin extends Employee {
         this.users = new ArrayList<>();
     }
 
-    // Singleton — thread-safe (double-checked locking)
     public static Admin getInstance() {
-        if (instance == null) {
-            synchronized (Admin.class) {
-                if (instance == null) {
-                    instance = new Admin();
+        if (instance == null) { // Объект БАР МА? (Жылдам тексеру)
+            synchronized (Admin.class) { // ҚҰЛЫПТАУ (бір уақытта бір адам кіреді)
+                if (instance == null) { // 	Қайта тексеру (БАСҚА адам жасап қоймады ма?)
+                    instance = new Admin(); // ЖАЛҒЫЗ объектті құру
                 }
             }
         }
-        return instance;
+        return instance; // Объектті қайтару
     }
     public static void setInstance(Admin loadedAdmin) {
         if (loadedAdmin != null) {
@@ -38,8 +37,6 @@ public class Admin extends Employee {
         instance = this;
         return this;
     }
-
-    // ==================== USER БАСҚАРУ ====================
 
     public void addUser(User user) {
         if (user == null) return;
@@ -73,8 +70,8 @@ public class Admin extends Employee {
         log("Failed to update — user not found. ID: " + updatedUser.getId());
     }
 
-    // ==================== ІЗДЕУ ====================
 
+    // іздейтін методтар
     public User findUserById(int userId) {
         for (User user : users) {
             if (user.getId() == userId) return user;
@@ -99,8 +96,6 @@ public class Admin extends Employee {
         return result;
     }
 
-    // ==================== LOG ====================
-
     private void log(String message) {
         String entry = "[" + java.time.LocalDateTime.now() + "] " + message;
         logFiles.add(entry);
@@ -110,8 +105,6 @@ public class Admin extends Employee {
     public List<String> viewLogs() {
         return new ArrayList<>(logFiles);
     }
-
-    // ==================== GETTERS ====================
 
     public List<User> getUsers() {
         return new ArrayList<>(users);

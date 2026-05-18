@@ -25,13 +25,9 @@ public class Message implements Serializable {
         this.isRead = false;
     }
 
-    // ==================== МЕТОДТАР ====================
-
     public void markAsRead() {
         this.isRead = true;
     }
-
-    // ==================== EQUALS / HASHCODE ====================
 
     @Override
     public boolean equals(Object o) {
@@ -47,8 +43,6 @@ public class Message implements Serializable {
     public int hashCode() {
         return Objects.hash(sender, receiver, timestamp);
     }
-
-    // ==================== GETTERS / SETTERS ====================
 
     public Employee getSender() { return sender; }
     public Employee getReceiver() { return receiver; }

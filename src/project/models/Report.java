@@ -10,8 +10,6 @@ public class Report {
 
     public Report() {}
 
-    // ==================== GETTERS / SETTERS ====================
-
     public int getTotalStudents() { return totalStudents; }
     public void setTotalStudents(int totalStudents) {
         this.totalStudents = totalStudents;

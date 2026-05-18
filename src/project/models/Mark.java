@@ -12,7 +12,7 @@ public class Mark implements Serializable {
     private double finalExam;
     private double total;
     private double gpa;
-    private String literalMark;
+    private String literalMark; // A, B, C, D, F
 
     public Mark() {}
 
@@ -24,8 +24,6 @@ public class Mark implements Serializable {
         this.finalExam = finalExam;
         calculateTotal();
     }
-
-    // ==================== ЕСЕПТЕУ ====================
 
     private void calculateTotal() {
         this.total = firstAttestation + secondAttestation + finalExam;
@@ -61,8 +59,6 @@ public class Mark implements Serializable {
         else return "F";
     }
 
-    // ==================== EQUALS / HASHCODE ====================
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,8 +71,6 @@ public class Mark implements Serializable {
     public int hashCode() {
         return Objects.hash(course);
     }
-
-    // ==================== GETTERS / SETTERS ====================
 
     public Course getCourse() { return course; }
     public void setCourse(Course course) { this.course = course; }
